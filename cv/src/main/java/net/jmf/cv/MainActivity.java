@@ -66,6 +66,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        mViewPager.setOffscreenPageLimit(mSectionsPagerAdapter.getCount() -1);
     }
 
 

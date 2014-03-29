@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">CV</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="app_name">CV Jean-Michel FAHYS</string>
+    <string name="title_section1">Présentation</string>
+    <string name="title_section2">Expérience</string>
+    <string name="title_section3">Compétence</string>
+    <string name="title_section4">Formation</string>
+    <string name="title_section5">Loisir</string>
     <string name="action_settings">Settings</string>
-
+    <string name="url_section2">http://www.jeanmichelfahys.net/android/jobs.php</string>
+    <string name="url_section3">http://www.jeanmichelfahys.net/android/skills.php</string>
+    <string name="url_section4">http://www.jeanmichelfahys.net/android/trainings.php</string>
+    <string name="url_section5">http://www.jeanmichelfahys.net/android/hobbies.php</string>
 </resources>
