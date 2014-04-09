@@ -1,5 +1,6 @@
 package net.jmf.cv.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,6 +21,8 @@ public class PlaceholderFragmentHome extends Fragment {
      */
     protected static final String ARG_SECTION_NUMBER = "section_number";
 
+    private Context context;
+    private TextView textView;
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -35,9 +38,23 @@ public class PlaceholderFragmentHome extends Fragment {
             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_accueil, container, false);
         assert rootView != null;
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+        textView = (TextView) rootView.findViewById(R.id.section_label);
         Log.d("DEBUG", "Création de la vue " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         return rootView;
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        context = getActivity();
+        if (savedInstanceState != null) {
+            //edtMessage.setText(savedInstanceState.getString(EdtStorageKey));
+        }
+        textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // Sauvegarde des données du contexte utilisateur
+        //outState.putInt("curChoice", mCurCheckPosition);
     }
 }
