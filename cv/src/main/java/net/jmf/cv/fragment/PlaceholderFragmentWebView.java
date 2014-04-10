@@ -115,7 +115,7 @@ public class PlaceholderFragmentWebView extends Fragment {
     /**
      * Handle webview state when rotating (for example)
      * Not usefull since site is fully loaded in cache
-     * @param outState
+     * @param outState  Bundle
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -148,10 +148,10 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Try to load from cache if network is not reachable
-         * @param view
-         * @param errorCode
-         * @param description
-         * @param failingUrl
+         * @param view          Webview
+         * @param errorCode     int
+         * @param description   String
+         * @param failingUrl    String
          */
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -176,9 +176,9 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Usefull in debug only
-         * @param view
-         * @param url
-         * @param favicon
+         * @param view      Webview
+         * @param url       String
+         * @param favicon   Bitmap
          */
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -188,8 +188,8 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Usefull in debug only
-         * @param view
-         * @param url
+         * @param view  Webview
+         * @param url   String
          */
         @Override
         public void onPageFinished(WebView view, String url) {
