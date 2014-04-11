@@ -51,6 +51,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         return this.fragments.get(position);
     }
 
+    @Override
     public CharSequence getPageTitle(int position) {
         return this.titles.get(position);
     }
@@ -59,36 +60,4 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public int getCount() {
         return this.fragments.size();
     }
-
-/*
-    @Override
-    public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragmentHome or a PlaceholderFragmentWebView (defined as a static inner class below).
-        if (position == 0) {
-            return PlaceholderFragmentHome.newInstance(position + 1);
-        }
-        return PlaceholderFragmentWebView.newInstance(position + 1);
-    }
-
-    @Override
-    public int getCount() {
-        // Show 3 total pages.
-        return 3;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        Locale l = Locale.getDefault();
-        switch (position) {
-            case 0:
-                return context.getString(R.string.title_section1).toUpperCase(l);
-            case 1:
-                return context.getString(R.string.title_section2).toUpperCase(l);
-            case 2:
-                return context.getString(R.string.title_section3).toUpperCase(l);
-        }
-        return null;
-    }
-    */
 }
