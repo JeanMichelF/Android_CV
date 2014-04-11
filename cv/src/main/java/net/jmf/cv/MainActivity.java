@@ -41,18 +41,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // TODO remove the comment when fully satisfied with the theme
         // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        //final ActionBar actionBar = getSupportActionBar();
+        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), getBaseContext());
-/*
+
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+/*
         // When swiping between different sections, select the corresponding
         // tab. We can also use ActionBar.Tab#select() to do this if we have
         // a reference to the Tab.
@@ -63,23 +65,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             }
         });
 */
-        // BEGIN_INCLUDE (setup_viewpager)
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        // END_INCLUDE (setup_viewpager)
-
-        // BEGIN_INCLUDE (setup_slidingtablayout)
         // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         // TODO : use a reference to the accentued color in the theme later
         mSlidingTabLayout.setSelectedIndicatorColors(Color.rgb(255,161,15));
         mSlidingTabLayout.setViewPager(mViewPager);
-        // END_INCLUDE (setup_slidingtablayout)
 
 
-
+/*
         // For each of the sections in the app, add a tab to the action bar.
         for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
             // Create a tab with text corresponding to the page title defined by
@@ -91,7 +85,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
-
+*/
         mViewPager.setOffscreenPageLimit(2);
     }
 
