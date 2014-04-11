@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="CVTheme" parent="@style/_CVTheme"/>
+
+  <style name="_CVTheme" parent="Theme.AppCompat.Light">
+
+    <item name="android:buttonStyle">@style/ButtonCVTheme</item>
+
+    <item name="android:imageButtonStyle">@style/ImageButtonCVTheme</item>
+
+    <item name="android:spinnerStyle">@style/SpinnerCVTheme</item>
+
+    <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemCVTheme</item>
+
+    <item name="android:progressBarStyleHorizontal">@style/ProgressBarCVTheme</item>
+
+    <item name="android:seekBarStyle">@style/SeekBarCVTheme</item>
+
+    <item name="android:buttonStyleToggle">@style/ToggleCVTheme</item>
+
+    <item name="android:listViewStyle">@style/ListViewCVTheme</item>
+
+    <item name="android:listViewWhiteStyle">@style/ListViewCVTheme.White</item>
+
+    <item name="android:spinnerItemStyle">@style/SpinnerItemCVTheme</item>
+
+  </style>
+
+</resources>

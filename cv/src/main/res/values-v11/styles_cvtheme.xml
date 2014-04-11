@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Generated with http://android-holo-colors.com -->
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <style name="ButtonCVTheme" parent="android:Widget.Holo.Light.Button">
+	  <item name="android:background">@drawable/cvtheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="ImageButtonCVTheme" parent="android:Widget.Holo.Light.ImageButton">
+	  <item name="android:background">@drawable/cvtheme_btn_default_holo_light</item>
+  </style>
+
+  <style name="SpinnerCVTheme" parent="android:Widget.Holo.Light.Spinner">
+      <item name="android:background">@drawable/cvtheme_spinner_background_holo_light</item>
+      <item name="android:dropDownSelector">@drawable/cvtheme_list_selector_holo_light</item>
+  </style>
+
+  <style name="ProgressBarCVTheme" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+      <item name="android:progressDrawable">@drawable/cvtheme_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/cvtheme_progress_indeterminate_horizontal_holo_light</item>
+  </style>
+
+  <style name="SeekBarCVTheme" parent="android:Widget.Holo.Light.SeekBar">
+      <item name="android:progressDrawable">@drawable/cvtheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:indeterminateDrawable">@drawable/cvtheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:thumb">@drawable/cvtheme_scrubber_control_selector_holo_light</item>
+  </style>
+
+  <style name="ToggleCVTheme" parent="android:Widget.Holo.Light.Button.Toggle">
+      <item name="android:background">@drawable/cvtheme_btn_toggle_holo_light</item>
+  </style>
+
+</resources>
