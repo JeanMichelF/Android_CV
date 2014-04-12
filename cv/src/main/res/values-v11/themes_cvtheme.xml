@@ -24,7 +24,8 @@
     <item name="android:activatedBackgroundIndicator">@drawable/cvtheme_activated_background_holo_light</item>
 
     <item name="android:fastScrollThumbDrawable">@drawable/cvtheme_fastscroll_thumb_holo</item>
-
+    <!-- Styling SlidingTabLayout -->
+    <item name="android:selectableItemBackground">@drawable/tab_indicator_ab_cv_jmf</item>
   </style>
 
 </resources>
