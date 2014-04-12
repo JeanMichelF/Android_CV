@@ -1,12 +1,11 @@
 package net.jmf.cv;
 
-import android.graphics.Color;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -68,10 +67,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-        // TODO : use a reference to the accentued color in the theme later
-        mSlidingTabLayout.setSelectedIndicatorColors(Color.rgb(255,161,15));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.cvtheme_color));
         mSlidingTabLayout.setViewPager(mViewPager);
-
 
 /*
         // For each of the sections in the app, add a tab to the action bar.
