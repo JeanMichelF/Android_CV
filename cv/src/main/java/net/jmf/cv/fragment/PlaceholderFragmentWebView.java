@@ -91,6 +91,7 @@ public class PlaceholderFragmentWebView extends Fragment {
             webView.getSettings().setAppCacheEnabled(true);
             webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
             webView.getSettings().setLoadsImagesAutomatically(true);
+            webView.getSettings().setLightTouchEnabled(false);
             webView.loadUrl(url);
         //}
         super.onActivityCreated(savedInstanceState);
