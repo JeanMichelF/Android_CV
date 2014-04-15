@@ -1,18 +1,25 @@
 package net.jmf.cv.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import net.jmf.cv.MyCVActivity;
 import net.jmf.cv.R;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -20,18 +27,27 @@ import java.util.GregorianCalendar;
  */
 public class PlaceholderFragmentHome extends Fragment {
 
-    private static final int YEAR_OF_BIRTH = 1979;
-    private static final int MONTH_OF_BIRTH = Calendar.APRIL;
-    private static final int DAY_OF_BIRTH = 16;
-
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     protected static final String ARG_SECTION_NUMBER = "section_number";
-
+    private static final int YEAR_OF_BIRTH = 1979;
+    private static final int MONTH_OF_BIRTH = Calendar.APRIL;
+    private static final int DAY_OF_BIRTH = 16;
     private Context context;
-    private TextView textView;
+    private TextView textViewAge;
+    private TextView textViewSituationMaritale;
+    private TextView textViewPermis;
+    private TextView textViewPresentation;
+    private TextView textViewGithub;
+    private TextView textViewEmail;
+    private TextView textViewSituationProfessionnelle;
+    private TextView textViewSituationCarriere;
+
+    public PlaceholderFragmentHome() {
+    }
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -40,21 +56,31 @@ public class PlaceholderFragmentHome extends Fragment {
         return new PlaceholderFragmentHome();
     }
 
-    public PlaceholderFragmentHome() {}
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_accueil, container, false);
         assert rootView != null;
-        textView = (TextView) rootView.findViewById(R.id.section_label);
+        textViewAge = (TextView) rootView.findViewById(R.id.age);
+        textViewSituationMaritale = (TextView) rootView.findViewById(R.id.situation_maritale);
+        textViewPresentation = (TextView) rootView.findViewById(R.id.presentation);
+        textViewGithub = (TextView) rootView.findViewById(R.id.github);
+        textViewEmail = (TextView) rootView.findViewById(R.id.email);
+        textViewSituationProfessionnelle = (TextView) rootView.findViewById(R.id.situation_professionnelle);
+        textViewSituationCarriere = (TextView) rootView.findViewById(R.id.situation_carriere);
         Log.d("DEBUG", "Création de la vue " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+        /*webView = (WebView) rootView.findViewById(R.id.presentation);
+        String text = "<html><body>"
+        + "<p align=\"justify\">"
+        + getString(R.string.home_presentation)
+        + "</p> "
+        + "</body></html>";
+        webView.loadData(text, "text/html", "utf-8");*/
         return rootView;
     }
 
     /**
-     *
-     * @param savedInstanceState    Bundle
+     * @param savedInstanceState Bundle
      */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -62,13 +88,36 @@ public class PlaceholderFragmentHome extends Fragment {
         if (savedInstanceState != null) {
             //edtMessage.setText(savedInstanceState.getString(EdtStorageKey));
         }
-        textView.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
+        textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
+
+        // Disabling link in Android previous to ICS : make the app crash when no email app is created
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            textViewEmail.setTextColor(textViewEmail.getLinkTextColors().getDefaultColor());
+            //textViewEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
+            textViewEmail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                            "mailto", textViewEmail.getText().toString(), null));
+                    if (MyCVActivity.isAvailable(context, emailIntent)) {
+                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
+                    } else {
+                        Toast.makeText(context, R.string.error_email_app_absent, Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+        } else {
+            textViewEmail.setAutoLinkMask(Linkify.EMAIL_ADDRESSES);
+        }
+        textViewEmail.setText(R.string.home_email);
+        // URL for Github clickable
+        textViewGithub.setText(Html.fromHtml(getResources().getString(R.string.home_github)));
+        textViewGithub.setMovementMethod(LinkMovementMethod.getInstance());
         super.onActivityCreated(savedInstanceState);
     }
 
     /**
-     *
-     * @param outState  Bundle
+     * @param outState Bundle
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -79,6 +128,7 @@ public class PlaceholderFragmentHome extends Fragment {
 
     /**
      * Calculate my age in years
+     *
      * @return int My age
      */
     private int getMyAge() {

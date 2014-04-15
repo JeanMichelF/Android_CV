@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.CV_JMF" >
         <activity
-            android:name="net.jmf.cv.MainActivity"
+            android:name=".MyCVActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

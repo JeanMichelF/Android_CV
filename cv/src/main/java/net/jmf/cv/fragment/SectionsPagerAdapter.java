@@ -23,12 +23,12 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         Locale l = Locale.getDefault();
         this.fragments = new ArrayList<Fragment>();
-        this.titles    = new ArrayList<String>();
+        this.titles = new ArrayList<String>();
         addItem(null, context.getString(R.string.title_section1).toUpperCase(l));
-        addItem(context.getString(R.string.url_section2),context.getString(R.string.title_section2).toUpperCase(l));
-        addItem(context.getString(R.string.url_section3),context.getString(R.string.title_section3).toUpperCase(l));
-        addItem(context.getString(R.string.url_section4),context.getString(R.string.title_section4).toUpperCase(l));
-        addItem(context.getString(R.string.url_section5),context.getString(R.string.title_section5).toUpperCase(l));
+        addItem(context.getString(R.string.url_section2), context.getString(R.string.title_section2).toUpperCase(l));
+        addItem(context.getString(R.string.url_section3), context.getString(R.string.title_section3).toUpperCase(l));
+        addItem(context.getString(R.string.url_section4), context.getString(R.string.title_section4).toUpperCase(l));
+        addItem(context.getString(R.string.url_section5), context.getString(R.string.title_section5).toUpperCase(l));
     }
 
     public void addItem(String url, String title) {

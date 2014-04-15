@@ -1,5 +1,9 @@
 package net.jmf.cv;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -12,7 +16,9 @@ import android.view.MenuItem;
 import net.jmf.cv.fragment.SectionsPagerAdapter;
 import net.jmf.cv.view.SlidingTabLayout;
 
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+import java.util.List;
+
+public class MyCVActivity extends ActionBarActivity implements ActionBar.TabListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -35,6 +41,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      */
     private ViewPager mViewPager;
 
+    /**
+     * Check if a Context is Available before sending it
+     *
+     * @param ctx    Context
+     * @param intent Intent
+     * @return bool
+     */
+    public static boolean isAvailable(Context ctx, Intent intent) {
+        final PackageManager mgr = ctx.getPackageManager();
+        List<ResolveInfo> list = mgr.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        return list.size() > 0;
+    }
+
+    /**
+     *
+     * @param savedInstanceState    Bundle
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +109,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager.setOffscreenPageLimit(2);
     }
 
-
+    /**
+     *
+     * @param menu  Menu
+     * @return      bool
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -94,6 +121,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         return true;
     }
 
+    /**
+     *
+     * @param item  MenuItem
+     * @return      bool
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -103,6 +135,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
+    /**
+     *
+     * @param tab                   ActionBar.Tab
+     * @param fragmentTransaction   FragmentTransaction
+     */
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
@@ -110,10 +147,20 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager.setCurrentItem(tab.getPosition());
     }
 
+    /**
+     *
+     * @param tab                   ActionBar.Tab
+     * @param fragmentTransaction   FragmentTransaction
+     */
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
+    /**
+     *
+     * @param tab                   ActionBar.Tab
+     * @param fragmentTransaction   FragmentTransaction
+     */
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }

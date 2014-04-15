@@ -14,4 +14,19 @@
     <string name="url_section5">http://www.jeanmichelfahys.net/android/hobbies.php</string>
 
     <string name="home_age">ans</string>
+    <string name="home_permis">Permis de conduire</string>
+    <string name="home_situation_maritale">Célibataire</string>
+    <string name="home_presentation_title">En quelques mots</string>
+    <string name="home_presentation">Après des études d\'informatiques, j\'ai été recruté par une puis deux Sociétés de Services en Ingénierie Informatique ce qui m\'a permis d\'exploiter et approfondir mes compétences.\nDisposant maintenant d\'une expérience significative, je suis à la recherche d\'opportunités permettant de m\'épanouir pleinement, sur des projets à plus long terme.</string>
+    <string name="home_lien_title">Sur le web</string>
+    <string name="home_github">&lt;a href="https://github.com/JeanMichelF">Github&lt;/a></string>
+    <string name="home_github_url">https://github.com/JeanMichelF</string>
+    <!-- <u> is a trick to make email like a link in Android < ICS (it's handled by an intent in those versions, ICS use autoLink -->
+    <string name="home_email"><u>cv@jeanmichelfahys.net</u></string>
+    <string name="home_title_situation_professionnelle">Situation professionnelle</string>
+    <string name="home_situation_professionnelle">En poste</string>
+    <string name="home_situation_carriere">Ouvert aux opportunités</string>
+    <string name="home_city">Bordeaux</string>
+
+    <string name="error_email_app_absent">Veuillez installer un client mail.</string>
 </resources>

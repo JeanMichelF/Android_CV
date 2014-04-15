@@ -34,6 +34,12 @@ public class PlaceholderFragmentWebView extends Fragment {
     private boolean mustBeRefresh;
 
     /**
+     *
+     */
+    public PlaceholderFragmentWebView() {
+    }
+
+    /**
      * Returns a new instance of this fragment
      */
     public static PlaceholderFragmentWebView newInstance() {
@@ -41,17 +47,11 @@ public class PlaceholderFragmentWebView extends Fragment {
     }
 
     /**
-     *
-     */
-    public PlaceholderFragmentWebView() {}
-
-
-    /**
      * Create the webview
      */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
         assert view != null;
         Log.d("DEBUG", "Création de la vue " + url);
@@ -70,34 +70,35 @@ public class PlaceholderFragmentWebView extends Fragment {
         /*if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {*/
-            webView.setWebViewClient(new MyBrowser());
-            webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-            webView.getSettings().setJavaScriptEnabled(true);
-            webView.getSettings().setSupportZoom(false);
-            webView.getSettings().setLoadWithOverviewMode(true);
-            webView.getSettings().setUseWideViewPort(true);
-            // Cache gestion
-            // This next one is crazy. It's the DEFAULT location for your app's cache
-            // But it didn't work for me without this line.
-            try {
-                String appCachePath = getActivity().getCacheDir().getAbsolutePath();
-                webView.getSettings().setAppCachePath(appCachePath);
-                Log.d("BROWSER", "App cache path : " + appCachePath);
-            } catch (NullPointerException e) {
-                Log.d("BROWSER", "Error setting app cache : " + e.getMessage());
-            }
-            webView.getSettings().setDomStorageEnabled(true);
-            webView.getSettings().setAllowFileAccess(true);
-            webView.getSettings().setAppCacheEnabled(true);
-            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            webView.getSettings().setLoadsImagesAutomatically(true);
-            webView.getSettings().setLightTouchEnabled(false);
-            webView.loadUrl(url);
+        webView.setWebViewClient(new MyBrowser());
+        webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSupportZoom(false);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        // Cache gestion
+        // This next one is crazy. It's the DEFAULT location for your app's cache
+        // But it didn't work for me without this line.
+        try {
+            String appCachePath = getActivity().getCacheDir().getAbsolutePath();
+            webView.getSettings().setAppCachePath(appCachePath);
+            Log.d("BROWSER", "App cache path : " + appCachePath);
+        } catch (NullPointerException e) {
+            Log.d("BROWSER", "Error setting app cache : " + e.getMessage());
+        }
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAppCacheEnabled(true);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setLightTouchEnabled(false);
+        webView.loadUrl(url);
         //}
         super.onActivityCreated(savedInstanceState);
     }
 
     // todo gérer la rotation : sur jobs.php, avoir les mêmes choses d'ouvertes : apparemment impossible
+
     /**
      * Try to refresh the webview if it was displaying "No network found" because of
      * network unreachable and nothing in cache
@@ -116,7 +117,8 @@ public class PlaceholderFragmentWebView extends Fragment {
     /**
      * Handle webview state when rotating (for example)
      * Not usefull since site is fully loaded in cache
-     * @param outState  Bundle
+     *
+     * @param outState Bundle
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -149,10 +151,11 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Try to load from cache if network is not reachable
-         * @param view          Webview
-         * @param errorCode     int
-         * @param description   String
-         * @param failingUrl    String
+         *
+         * @param view        Webview
+         * @param errorCode   int
+         * @param description String
+         * @param failingUrl  String
          */
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -164,7 +167,7 @@ public class PlaceholderFragmentWebView extends Fragment {
                 view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                 view.loadUrl(failingUrl);
                 mustBeRefresh = false;
-            // Seems that there isn't a network around there and no cache neither !
+                // Seems that there isn't a network around there and no cache neither !
             } else if (view.getSettings().getCacheMode() == WebSettings.LOAD_CACHE_ELSE_NETWORK) {
                 Log.e("BROWSER", "No network and no cache available " + failingUrl + " " + errorCode + " " + description);
                 view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
@@ -177,9 +180,10 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Usefull in debug only
-         * @param view      Webview
-         * @param url       String
-         * @param favicon   Bitmap
+         *
+         * @param view    Webview
+         * @param url     String
+         * @param favicon Bitmap
          */
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -189,8 +193,9 @@ public class PlaceholderFragmentWebView extends Fragment {
 
         /**
          * Usefull in debug only
-         * @param view  Webview
-         * @param url   String
+         *
+         * @param view Webview
+         * @param url  String
          */
         @Override
         public void onPageFinished(WebView view, String url) {

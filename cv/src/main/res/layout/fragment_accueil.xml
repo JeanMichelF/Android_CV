@@ -1,16 +1,93 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:background="@android:color/white"
-    tools:context="net.jmf.cv.MainActivity$PlaceholderFragment">
+    android:layout_height="fill_parent"
+    android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/section_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="net.jmf.cv.MyCVActivity$PlaceholderFragment">
+
+        <TextView
+            android:id="@+id/age"
+            style="@style/textHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/situation_maritale"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_situation_maritale" />
+
+        <TextView
+            android:id="@+id/permis"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_permis" />
+
+        <TextView
+            android:id="@+id/presentation_title"
+            style="@style/titleHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_presentation_title" />
+
+        <TextView
+            android:id="@+id/presentation"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_presentation" />
+
+        <TextView
+            android:id="@+id/surleweb_title"
+            style="@style/titleHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_lien_title" />
+
+        <TextView
+            android:id="@+id/github"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:linksClickable="true"
+            android:text="@string/home_github" />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_email" />
+
+        <TextView
+            android:id="@+id/situation_professionnelle_title"
+            style="@style/titleHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_title_situation_professionnelle" />
+
+        <TextView
+            android:id="@+id/situation_professionnelle"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_situation_professionnelle" />
+
+        <TextView
+            android:id="@+id/situation_carriere"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_situation_carriere" />
+
+    </LinearLayout>
+</ScrollView>
