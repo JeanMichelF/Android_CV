@@ -53,12 +53,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/home_lien_title" />
-
+        <!-- Icons from https://github.com/svenkapudija/Androton-Action-Bar-Icons -->
         <TextView
             android:id="@+id/github"
             style="@style/textHome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_github"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
             android:linksClickable="true"
             android:text="@string/home_github" />
 
@@ -66,6 +69,9 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_email"
+            android:drawablePadding="5dp"
+            android:gravity="center_vertical"
             android:text="@string/home_email" />
 
         <TextView
