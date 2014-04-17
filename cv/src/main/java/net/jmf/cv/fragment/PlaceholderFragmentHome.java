@@ -19,8 +19,10 @@ import android.widget.Toast;
 import net.jmf.cv.MyCVActivity;
 import net.jmf.cv.R;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by Jean-Mi on 26/03/2014.
@@ -44,7 +46,9 @@ public class PlaceholderFragmentHome extends Fragment {
     private TextView textViewEmail;
     private TextView textViewSituationProfessionnelle;
     private TextView textViewSituationCarriere;
-
+    private TextView textViewPresentationTitle;
+    private TextView textViewLinkTitle;
+    private TextView textViewSituationProfessionnelleTitle;
     public PlaceholderFragmentHome() {
     }
 
@@ -68,6 +72,9 @@ public class PlaceholderFragmentHome extends Fragment {
         textViewEmail = (TextView) rootView.findViewById(R.id.email);
         textViewSituationProfessionnelle = (TextView) rootView.findViewById(R.id.situation_professionnelle);
         textViewSituationCarriere = (TextView) rootView.findViewById(R.id.situation_carriere);
+        textViewPresentationTitle = (TextView) rootView.findViewById(R.id.presentation_title);
+        textViewLinkTitle = (TextView) rootView.findViewById(R.id.surleweb_title);
+        textViewSituationProfessionnelleTitle = (TextView) rootView.findViewById(R.id.situation_professionnelle_title);
         Log.d("DEBUG", "Création de la vue " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
         /*webView = (WebView) rootView.findViewById(R.id.presentation);
         String text = "<html><body>"
@@ -89,6 +96,14 @@ public class PlaceholderFragmentHome extends Fragment {
             //edtMessage.setText(savedInstanceState.getString(EdtStorageKey));
         }
         textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
+
+        //Capitalize all letters for titles in Android previous to ICS : make the app crash when no email app is created
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            List<TextView> titlesView = Arrays.asList(textViewPresentationTitle, textViewLinkTitle, textViewSituationProfessionnelleTitle);
+            for (TextView textView : titlesView) {
+                textView.setText(textView.getText().toString().toUpperCase());
+            }
+        }
 
         // Disabling link in Android previous to ICS : make the app crash when no email app is created
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
