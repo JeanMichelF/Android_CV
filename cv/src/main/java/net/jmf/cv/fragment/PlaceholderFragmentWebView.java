@@ -54,7 +54,6 @@ public class PlaceholderFragmentWebView extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_webview, container, false);
         assert view != null;
-        Log.d("DEBUG", "Création de la vue " + url);
         webView = (WebView) view.findViewById(R.id.webView);
         return view;
     }
@@ -67,6 +66,7 @@ public class PlaceholderFragmentWebView extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
         url = getArguments().getString(ARG_SECTION_URL);
+        Log.d("DEBUG", "Création de la vue " + url);
         /*if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {*/

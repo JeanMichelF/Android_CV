@@ -18,7 +18,18 @@ import android.widget.Toast;
 
 import net.jmf.cv.MyCVActivity;
 import net.jmf.cv.R;
+import net.jmf.cv.service.NetworkHttpHandler;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -37,6 +48,7 @@ public class PlaceholderFragmentHome extends Fragment {
     private static final int YEAR_OF_BIRTH = 1979;
     private static final int MONTH_OF_BIRTH = Calendar.APRIL;
     private static final int DAY_OF_BIRTH = 16;
+    private final String CACHE_FILE_NAME = "homedatas.json";
     private Context context;
     private TextView textViewAge;
     private TextView textViewSituationMaritale;
@@ -49,6 +61,7 @@ public class PlaceholderFragmentHome extends Fragment {
     private TextView textViewPresentationTitle;
     private TextView textViewLinkTitle;
     private TextView textViewSituationProfessionnelleTitle;
+
     public PlaceholderFragmentHome() {
     }
 
@@ -72,17 +85,11 @@ public class PlaceholderFragmentHome extends Fragment {
         textViewEmail = (TextView) rootView.findViewById(R.id.email);
         textViewSituationProfessionnelle = (TextView) rootView.findViewById(R.id.situation_professionnelle);
         textViewSituationCarriere = (TextView) rootView.findViewById(R.id.situation_carriere);
+        textViewPermis = (TextView) rootView.findViewById(R.id.permis);
         textViewPresentationTitle = (TextView) rootView.findViewById(R.id.presentation_title);
         textViewLinkTitle = (TextView) rootView.findViewById(R.id.surleweb_title);
         textViewSituationProfessionnelleTitle = (TextView) rootView.findViewById(R.id.situation_professionnelle_title);
         Log.d("DEBUG", "Création de la vue " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
-        /*webView = (WebView) rootView.findViewById(R.id.presentation);
-        String text = "<html><body>"
-        + "<p align=\"justify\">"
-        + getString(R.string.home_presentation)
-        + "</p> "
-        + "</body></html>";
-        webView.loadData(text, "text/html", "utf-8");*/
         return rootView;
     }
 
@@ -93,6 +100,7 @@ public class PlaceholderFragmentHome extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
         if (savedInstanceState != null) {
+            // TODO handle here all previous loaded data in order to not make another call for each rotation...
             //edtMessage.setText(savedInstanceState.getString(EdtStorageKey));
         }
         textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
@@ -128,6 +136,10 @@ public class PlaceholderFragmentHome extends Fragment {
         // URL for Github clickable
         textViewGithub.setText(Html.fromHtml(getResources().getString(R.string.home_github)));
         textViewGithub.setMovementMethod(LinkMovementMethod.getInstance());
+
+        // Overriding if possible datas from Strings.xml with some on network or in cache
+        loadDataPresentation();
+
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -163,5 +175,135 @@ public class PlaceholderFragmentHome extends Fragment {
         }
 
         return a;
+    }
+
+    /**
+     * Load data from an URL
+     */
+    private void loadFromWeb() {
+        Log.d("loadFromWeb", "Load from Web");
+        new NetworkHttpHandler() {
+
+            @Override
+            public HttpUriRequest getHttpRequestMethod() {
+                return new HttpGet(getResources().getString(R.string.url_section1));
+            }
+
+            @Override
+            public void onResponse(String result) {
+                // Create a JSON object from the request response
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    Log.d("loadFromWeb", "Load from Web result " + result);
+                    saveIntoCache(jsonObject);
+                    handleDataPresentation(jsonObject);
+                } catch (JSONException e) {
+                    Log.e("loadFromWeb", "Could not convert into JSONObject " + e.getMessage());
+                    loadFromCache();
+                }
+            }
+
+            @Override
+            public void onCancel(String result) {
+                loadFromCache();
+            }
+        }.execute();
+    }
+
+
+    /**
+     * Load data from cache
+     */
+    private void loadFromCache() {
+        Log.d("loadFromCache", "Load from Cache");
+        /** Reading contents of the temporary file, if already exists */
+        try {
+            File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
+            FileReader fReader = new FileReader(tempFile);
+            BufferedReader bReader = new BufferedReader(fReader);
+            StringBuilder text = new StringBuilder();
+            String strLine = "";
+            while ((strLine = bReader.readLine()) != null) {
+                text.append(strLine);
+            }
+            JSONObject jsonObject = new JSONObject(text.toString());
+            handleDataPresentation(jsonObject);
+        } catch (IOException | NullPointerException | JSONException e) {
+            Log.d("loadFromCache", "Error loading file " + e.getMessage());
+        }
+    }
+
+    /**
+     * Save data into cache
+     */
+    private void saveIntoCache(Object object) {
+        /** Create a tempfile and save it into app cache */
+        try {
+            File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
+            FileWriter writer = new FileWriter(tempFile);
+            writer.write(object.toString());
+            writer.close();
+        } catch (IOException | NullPointerException e) {
+            Log.d("saveIntoCache", "Error saving file " + e.getMessage());
+        }
+    }
+
+    /**
+     * Handle loading of datas through network then cache
+     * In fact, I could have added the URL to load into site.manifest and let WebView handle this through ViewPager setOffscreenPageLimit
+     * but hey, it's a learning/experimental project !
+     */
+    private void loadDataPresentation() {
+        loadFromWeb();
+    }
+
+    /**
+     * Update textViews with data provided by network or cache
+     */
+    private void handleDataPresentation(JSONObject datas) {
+        if (null != datas) {
+            try {
+                textViewSituationMaritale.setText(datas.getString("situationMaritale"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update situationMaritale " + e.getMessage());
+            }
+            try {
+                textViewPresentation.setText(datas.getString("presentation"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update presentation " + e.getMessage());
+            }
+            /* Not yet
+            try {
+                textViewGithub.setText(datas.getString("urlGithub"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation","Could not update urlGithub " + e.getMessage());
+            }*/
+            try {
+                textViewEmail.setText(datas.getString("email"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update email " + e.getMessage());
+            }
+            try {
+                textViewSituationProfessionnelle.setText(datas.getString("situationProfessionnelle"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update situationProfessionnelle " + e.getMessage());
+            }
+            try {
+                textViewSituationCarriere.setText(datas.getString("situationCarriere"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update situationCarriere " + e.getMessage());
+            }
+            try {
+                textViewPermis.setText(datas.getString("permis"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation", "Could not update permis " + e.getMessage());
+            }
+            /* Not yet
+            try {
+                textViewVille.setText(datas.getString("ville"));
+            } catch (JSONException e) {
+                Log.e("handleDataPresentation","Could not update ville " + e.getMessage());
+            }*/
+        }
     }
 }

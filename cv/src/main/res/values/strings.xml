@@ -8,6 +8,7 @@
     <string name="title_section4">Formation</string>
     <string name="title_section5">Loisir</string>
     <string name="action_settings">Settings</string>
+    <string name="url_section1">http://www.jeanmichelfahys.net/android/presentation.php</string>
     <string name="url_section2">http://www.jeanmichelfahys.net/android/jobs.php</string>
     <string name="url_section3">http://www.jeanmichelfahys.net/android/skills.php</string>
     <string name="url_section4">http://www.jeanmichelfahys.net/android/trainings.php</string>
