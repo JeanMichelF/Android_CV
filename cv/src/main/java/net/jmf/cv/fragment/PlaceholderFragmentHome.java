@@ -101,7 +101,7 @@ public class PlaceholderFragmentHome extends Fragment {
 
         //We must style everytime : Android does not handle this well (but text in TextView, yes)
 
-        //Capitalize all letters for titles in Android previous to ICS : make the app crash when no email app is created
+        //Capitalize all letters for titles in Android previous to ICS : make the app consistent with Webviews
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             List<TextView> titlesView = Arrays.asList(textViewPresentationTitle, textViewLinkTitle, textViewSituationProfessionnelleTitle);
             for (TextView textView : titlesView) {
