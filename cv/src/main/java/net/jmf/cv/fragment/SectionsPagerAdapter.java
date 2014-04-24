@@ -36,7 +36,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         Bundle args = new Bundle();
         if (null == url) {
             myFragment = PlaceholderFragmentHome.newInstance();
-            args.putInt(PlaceholderFragmentHome.ARG_SECTION_NUMBER, 1);
         } else {
             myFragment = PlaceholderFragmentWebView.newInstance();
             args.putString(PlaceholderFragmentWebView.ARG_SECTION_URL, url);

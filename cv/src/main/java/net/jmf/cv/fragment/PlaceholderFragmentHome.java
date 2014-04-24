@@ -36,18 +36,15 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
+ * Home Fragment
  * Created by Jean-Mi on 26/03/2014.
  */
 public class PlaceholderFragmentHome extends Fragment {
 
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    protected static final String ARG_SECTION_NUMBER = "section_number";
     private static final int YEAR_OF_BIRTH = 1979;
     private static final int MONTH_OF_BIRTH = Calendar.APRIL;
     private static final int DAY_OF_BIRTH = 16;
+    private static final String TEXTVIEW_AGE_VALUE = "age";
     private final String CACHE_FILE_NAME = "homedatas.json";
     private Context context;
     private TextView textViewAge;
@@ -89,24 +86,23 @@ public class PlaceholderFragmentHome extends Fragment {
         textViewPresentationTitle = (TextView) rootView.findViewById(R.id.presentation_title);
         textViewLinkTitle = (TextView) rootView.findViewById(R.id.surleweb_title);
         textViewSituationProfessionnelleTitle = (TextView) rootView.findViewById(R.id.situation_professionnelle_title);
-        Log.d("DEBUG", "Création de la vue " + Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+        Log.d("DEBUG", "Création de la vue home");
         return rootView;
     }
 
     /**
+     * Load from bundle if it exists, otherwise go check online/in cache
+     *
      * @param savedInstanceState Bundle
      */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
-        if (savedInstanceState != null) {
-            // TODO handle here all previous loaded data in order to not make another call for each rotation...
-            //edtMessage.setText(savedInstanceState.getString(EdtStorageKey));
-        }
-        textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
+
+        //We must style everytime : Android does not handle this well (but text in TextView, yes)
 
         //Capitalize all letters for titles in Android previous to ICS : make the app crash when no email app is created
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             List<TextView> titlesView = Arrays.asList(textViewPresentationTitle, textViewLinkTitle, textViewSituationProfessionnelleTitle);
             for (TextView textView : titlesView) {
                 textView.setText(textView.getText().toString().toUpperCase());
@@ -114,7 +110,7 @@ public class PlaceholderFragmentHome extends Fragment {
         }
 
         // Disabling link in Android previous to ICS : make the app crash when no email app is created
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             textViewEmail.setTextColor(textViewEmail.getLinkTextColors().getDefaultColor());
             //textViewEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             textViewEmail.setOnClickListener(new View.OnClickListener() {
@@ -137,20 +133,30 @@ public class PlaceholderFragmentHome extends Fragment {
         textViewGithub.setText(Html.fromHtml(getResources().getString(R.string.home_github)));
         textViewGithub.setMovementMethod(LinkMovementMethod.getInstance());
 
-        // Overriding if possible datas from Strings.xml with some on network or in cache
-        loadDataPresentation();
-
+        // If we run this for the first time, let's try to get refresh datas
+        if (savedInstanceState == null) {
+            Log.d("HOME FRAGMENT", "Full initialization");
+            textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
+            // Overriding if possible datas from Strings.xml with some on network or in cache
+            loadDataPresentation();
+        } else {
+            // Load Age
+            if (null != savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE)) {
+                textViewAge.setText(savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE));
+            }
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
     /**
+     * Save datas from TextViews : Android handles this natively, but not quite good with Age
+     *
      * @param outState Bundle
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        // Sauvegarde des données du contexte utilisateur
-        //outState.putInt("curChoice", mCurCheckPosition);
+        outState.putCharSequence(TEXTVIEW_AGE_VALUE, textViewAge.getText());
     }
 
     /**
@@ -222,7 +228,7 @@ public class PlaceholderFragmentHome extends Fragment {
             FileReader fReader = new FileReader(tempFile);
             BufferedReader bReader = new BufferedReader(fReader);
             StringBuilder text = new StringBuilder();
-            String strLine = "";
+            String strLine;
             while ((strLine = bReader.readLine()) != null) {
                 text.append(strLine);
             }
