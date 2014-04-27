@@ -11,13 +11,10 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
- * Webview with JS
+ * Webview with Javascript
  * Created by Jean-Mi on 27/04/2014.
  */
 public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWebView {
@@ -33,6 +30,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
     public PlaceholderFragmentWebViewJavaScript() {
         listClikedItems = new ArrayList<>();
         listStyleClikedItems = new ArrayList<>();
+        // With this, we have the pseudo click in Javascript fully operational and no need to save our clicks into onSaveInstanceState
         setRetainInstance(true);
     }
 
@@ -52,14 +50,6 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         Log.d("DEBUG", "Création de la vue PlaceholderFragmentWebViewJavaScript " + url);
         super.webView.getSettings().setJavaScriptEnabled(true);
 
-        // Get the list of saved items clicked before
-        if (savedInstanceState != null) {
-            listClikedItems = savedInstanceState.getStringArrayList(CLICKED_ITEMS);
-            Log.i("onActivityCreated", "Récupération de la liste getListClikedItems " + listClikedItems.size());
-            listStyleClikedItems = savedInstanceState.getStringArrayList(CLICKED_STYLE_ITEMS);
-            Log.i("onActivityCreated", "Récupération de la liste listStyleClikedItems " + listStyleClikedItems.size());
-        }
-
         super.webView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 // BugFix for E/webcoreglue﹕ Should not happen: no rect-based-test nodes found
@@ -72,9 +62,10 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
             }
         });
 
+        // Add a bridge between Android and Javascript
         super.webView.addJavascriptInterface(new WebAppInterface(this), "CallToAnAndroidFunction");
 
-        // for debugging, this will handle the console.log() in javascript
+        // for debugging, this will handle the console.log() in Javascript
         super.webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -86,22 +77,6 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         super.onActivityCreated(savedInstanceState);
 
         webView.setWebViewClient(new MyBrowserJS());
-    }
-
-    /**
-     * Handle webview state when rotating (for example)
-     * Only usefull for clicks in JS since site is fully loaded in cache
-     *
-     * @param outState Bundle
-     */
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        // Save all the clicked items
-        Log.i("onSaveInstanceState", "Sauvegarde de la liste getListClikedItems " + getListClikedItems().size());
-        outState.putStringArrayList(CLICKED_ITEMS, (ArrayList<String>) getListClikedItems());
-        Log.i("onSaveInstanceState", "Sauvegarde de la liste getListClikedItems " + getListStyleClikedItems().size());
-        outState.putStringArrayList(CLICKED_STYLE_ITEMS, (ArrayList<String>) getListStyleClikedItems());
     }
 
     /**
@@ -137,29 +112,39 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
 
         /**
          * Save all clicks
+         *
+         * @param idDomElement id of DOM Element clicked
+         * @param mustAdd      do we must save this click ? No if we're simulating clicks
          */
         @JavascriptInterface
-        public void saveClick(String idDomElement) {
-            Log.i("PlaceholderFragmentWebViewJavaScript", idDomElement + " clicked");
+        public void saveClick(String idDomElement, boolean mustAdd) {
+            Log.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " clicked");
             // If it exist then delete instead of add
-            if (!placeholderFragmentWebViewJavaScript.getListClikedItems().contains(idDomElement)) {
-                placeholderFragmentWebViewJavaScript.getListClikedItems().add(idDomElement);
-            } else {
-                placeholderFragmentWebViewJavaScript.getListClikedItems().remove(idDomElement);
+            if (mustAdd) {
+                if (!placeholderFragmentWebViewJavaScript.getListClikedItems().contains(idDomElement)) {
+                    placeholderFragmentWebViewJavaScript.getListClikedItems().add(idDomElement);
+                } else {
+                    placeholderFragmentWebViewJavaScript.getListClikedItems().remove(idDomElement);
+                }
             }
         }
 
         /**
-         * Save all clicks
+         * Save all clicks and handle styles
+         *
+         * @param idDomElement id of DOM Element clicked
+         * @param mustAdd      do we must save this click ? No if we're simulating clicks
          */
         @JavascriptInterface
-        public void saveStyle(String idDomElement) {
-            Log.i("PlaceholderFragmentWebViewJavaScript", idDomElement + " style clicked");
+        public void saveStyle(String idDomElement, boolean mustAdd) {
+            Log.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " style clicked and must Add : " + mustAdd);
             // If it exist then delete instead of add
-            if (!placeholderFragmentWebViewJavaScript.getListStyleClikedItems().contains(idDomElement)) {
-                placeholderFragmentWebViewJavaScript.getListStyleClikedItems().add(idDomElement);
-            } else {
-                placeholderFragmentWebViewJavaScript.getListStyleClikedItems().remove(idDomElement);
+            if (mustAdd) {
+                if (!placeholderFragmentWebViewJavaScript.getListStyleClikedItems().contains(idDomElement)) {
+                    placeholderFragmentWebViewJavaScript.getListStyleClikedItems().add(idDomElement);
+                } else {
+                    placeholderFragmentWebViewJavaScript.getListStyleClikedItems().remove(idDomElement);
+                }
             }
         }
     }
@@ -167,7 +152,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
     private class MyBrowserJS extends MyBrowser {
 
         /**
-         * Usefull in debug only
+         * Make pseudo click when page is fully loaded
          *
          * @param view Webview
          * @param url  String
@@ -175,37 +160,24 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         @Override
         public void onPageFinished(WebView view, String url) {
             Log.i("BROWSER JS", "Finish loading... " + url);
-
             // If there were some clicked items, let's reclick them as they were
             if (!listClikedItems.isEmpty()) {
-                try {
-                    // Do not execute 2 times sameid, so flush everything which is 2 times in the list
-                    Set<String> set = new HashSet<>();
-                    set.addAll(listClikedItems);
-                    listClikedItems = new ArrayList<>(set);
-                    for (String item : listClikedItems) {
-                        Log.i("onPageFinished", "CLICK ON SAVED : " + item);
-                        // Refresh and redisplay everything which has been clicked
-                        view.loadUrl("javascript:toggleVisible('" + item + "')");
-                    }
-                } catch (ConcurrentModificationException e) {
-                    Log.e("onPageFinished", "Ooops...");
+                ArrayList<String> listClikedItemsTmp = new ArrayList<>();
+                listClikedItemsTmp.addAll(listClikedItems);
+                for (String item : listClikedItemsTmp) {
+                    Log.i("onPageFinished", "CLICK ON SAVED : " + item);
+                    // Refresh and redisplay everything which has been clicked
+                    view.loadUrl("javascript:toggleVisible('" + item + "',false)");
                 }
             }
             // Let's do this with style !
             if (!listStyleClikedItems.isEmpty()) {
-                try {
-                    // Do not execute 2 times sameid, so flush everything which is 2 times in the list
-                    Set<String> set = new HashSet<>();
-                    set.addAll(listStyleClikedItems);
-                    listStyleClikedItems = new ArrayList<>(set);
-                    for (String item : listStyleClikedItems) {
-                        Log.i("onPageFinished", "STYLE CLICK ON SAVED : " + item);
-                        // Refresh and redisplay everything which has been clicked
-                        view.loadUrl("javascript:changeH2Style('" + item + "')");
-                    }
-                } catch (ConcurrentModificationException e) {
-                    Log.e("onPageFinished", "Ooops...");
+                ArrayList<String> listStyleClikedItemsTmp = new ArrayList<>();
+                listStyleClikedItemsTmp.addAll(listStyleClikedItems);
+                for (String item : listStyleClikedItemsTmp) {
+                    Log.i("onPageFinished", "STYLE CLICK ON SAVED : " + item);
+                    // Refresh and redisplay everything which has been clicked
+                    view.loadUrl("javascript:changeH2Style('" + item + "',false)");
                 }
             }
         }
