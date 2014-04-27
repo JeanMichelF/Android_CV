@@ -106,7 +106,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 */
-        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setOffscreenPageLimit(5);
     }
 
     /**

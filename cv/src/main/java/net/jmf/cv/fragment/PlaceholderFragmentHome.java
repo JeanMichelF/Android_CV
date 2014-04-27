@@ -144,6 +144,9 @@ public class PlaceholderFragmentHome extends Fragment {
             if (null != savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE)) {
                 textViewAge.setText(savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE));
             }
+            // Overriding if possible datas from Strings.xml with some on cache
+            // Usefull when rotating before completion of web call : result of webcall is in cache
+            loadFromCache();
         }
         super.onActivityCreated(savedInstanceState);
     }
