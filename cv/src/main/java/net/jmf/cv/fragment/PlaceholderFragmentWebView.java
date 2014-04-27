@@ -1,6 +1,5 @@
 package net.jmf.cv.fragment;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,6 +17,7 @@ import android.webkit.WebViewClient;
 import net.jmf.cv.R;
 
 /**
+ * Webview Fragment
  * Created by Jean-Mi on 26/03/2014.
  */
 public class PlaceholderFragmentWebView extends Fragment {
@@ -27,11 +27,11 @@ public class PlaceholderFragmentWebView extends Fragment {
      */
     protected static final String ARG_SECTION_URL = "section_number";
 
-    private String url;
+    protected String url;
 
-    private Context context;
-    private WebView webView;
-    private boolean mustBeRefresh;
+    protected Context context;
+    protected WebView webView;
+    protected boolean mustBeRefresh;
 
     /**
      *
@@ -62,17 +62,13 @@ public class PlaceholderFragmentWebView extends Fragment {
      * Load an URL for the webview
      */
     @Override
-    @SuppressLint("SetJavaScriptEnabled")
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
         url = getArguments().getString(ARG_SECTION_URL);
         Log.d("DEBUG", "Création de la vue " + url);
-        /*if (savedInstanceState != null) {
-            webView.restoreState(savedInstanceState);
-        } else {*/
+
         webView.setWebViewClient(new MyBrowser());
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
-        webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setSupportZoom(false);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.getSettings().setUseWideViewPort(true);
@@ -92,8 +88,11 @@ public class PlaceholderFragmentWebView extends Fragment {
         webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setLightTouchEnabled(false);
-        webView.loadUrl(url);
-        //}
+        if (savedInstanceState != null) {
+            webView.restoreState(savedInstanceState);
+        } else {
+            webView.loadUrl(url);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -133,7 +132,7 @@ public class PlaceholderFragmentWebView extends Fragment {
     /**
      * Handle links into a new browser and try to load from cache if network is not reachable
      */
-    private class MyBrowser extends WebViewClient {
+    protected class MyBrowser extends WebViewClient {
 
         /**
          * Handle links into a new browser activity

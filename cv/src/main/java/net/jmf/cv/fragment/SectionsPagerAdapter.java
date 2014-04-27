@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ * Section Pager for swipables fragments
  * Created by Jean-Mi on 24/03/2014.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -22,23 +23,28 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public SectionsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         Locale l = Locale.getDefault();
-        this.fragments = new ArrayList<Fragment>();
-        this.titles = new ArrayList<String>();
-        addItem(null, context.getString(R.string.title_section1).toUpperCase(l));
-        addItem(context.getString(R.string.url_section2), context.getString(R.string.title_section2).toUpperCase(l));
-        addItem(context.getString(R.string.url_section3), context.getString(R.string.title_section3).toUpperCase(l));
-        addItem(context.getString(R.string.url_section4), context.getString(R.string.title_section4).toUpperCase(l));
-        addItem(context.getString(R.string.url_section5), context.getString(R.string.title_section5).toUpperCase(l));
+        this.fragments = new ArrayList<>();
+        this.titles = new ArrayList<>();
+        addItem(null, context.getString(R.string.title_section1).toUpperCase(l), false);
+        addItem(context.getString(R.string.url_section2), context.getString(R.string.title_section2).toUpperCase(l), true);
+        addItem(context.getString(R.string.url_section3), context.getString(R.string.title_section3).toUpperCase(l), false);
+        addItem(context.getString(R.string.url_section4), context.getString(R.string.title_section4).toUpperCase(l), false);
+        addItem(context.getString(R.string.url_section5), context.getString(R.string.title_section5).toUpperCase(l), false);
     }
 
-    public void addItem(String url, String title) {
+    public void addItem(String url, String title, boolean withJS) {
         Fragment myFragment;
         Bundle args = new Bundle();
         if (null == url) {
             myFragment = PlaceholderFragmentHome.newInstance();
         } else {
-            myFragment = PlaceholderFragmentWebView.newInstance();
-            args.putString(PlaceholderFragmentWebView.ARG_SECTION_URL, url);
+            if (withJS) {
+                myFragment = PlaceholderFragmentWebViewJavaScript.newInstance();
+                args.putString(PlaceholderFragmentWebView.ARG_SECTION_URL, url);
+            } else {
+                myFragment = PlaceholderFragmentWebView.newInstance();
+                args.putString(PlaceholderFragmentWebView.ARG_SECTION_URL, url);
+            }
         }
         myFragment.setArguments(args);
         this.fragments.add(myFragment);
