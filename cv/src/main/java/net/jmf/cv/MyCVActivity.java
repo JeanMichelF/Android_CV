@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -55,14 +58,35 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
+     * Change blue color to another color when hitting top or bottom of a scrollview
+     * http://evendanan.net/android/branding/2013/12/09/branding-edge-effect/
      *
-     * @param savedInstanceState    Bundle
+     * @param context    Context
+     * @param brandColor Color
+     */
+    public static void brandGlowEffect(Context context, int brandColor) {
+        //glow
+        int glowDrawableId = context.getResources().getIdentifier("overscroll_glow", "drawable", "android");
+        Drawable androidGlow = context.getResources().getDrawable(glowDrawableId);
+        androidGlow.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
+        //edge
+        int edgeDrawableId = context.getResources().getIdentifier("overscroll_edge", "drawable", "android");
+        Drawable androidEdge = context.getResources().getDrawable(edgeDrawableId);
+        androidEdge.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
+    }
+
+    /**
+     * @param savedInstanceState Bundle
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Seems that the hacky way to change the color doesn't work well with Kitkat : might be because of virtual device...
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            MyCVActivity.brandGlowEffect(getBaseContext(), getResources().getColor(R.color.cvtheme_color));
+        }
         // TODO remove the comment when fully satisfied with the theme
         // Set up the action bar.
         //final ActionBar actionBar = getSupportActionBar();
@@ -110,9 +134,8 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
-     *
-     * @param menu  Menu
-     * @return      bool
+     * @param menu Menu
+     * @return bool
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -122,9 +145,8 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
-     *
-     * @param item  MenuItem
-     * @return      bool
+     * @param item MenuItem
+     * @return bool
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -136,9 +158,8 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
-     *
-     * @param tab                   ActionBar.Tab
-     * @param fragmentTransaction   FragmentTransaction
+     * @param tab                 ActionBar.Tab
+     * @param fragmentTransaction FragmentTransaction
      */
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
@@ -148,21 +169,18 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
-     *
-     * @param tab                   ActionBar.Tab
-     * @param fragmentTransaction   FragmentTransaction
+     * @param tab                 ActionBar.Tab
+     * @param fragmentTransaction FragmentTransaction
      */
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
 
     /**
-     *
-     * @param tab                   ActionBar.Tab
-     * @param fragmentTransaction   FragmentTransaction
+     * @param tab                 ActionBar.Tab
+     * @param fragmentTransaction FragmentTransaction
      */
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
     }
-
 }
