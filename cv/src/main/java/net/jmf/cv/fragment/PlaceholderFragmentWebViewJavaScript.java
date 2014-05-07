@@ -32,6 +32,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         listStyleClikedItems = new ArrayList<>();
         // With this, we have the pseudo click in Javascript fully operational and no need to save our clicks into onSaveInstanceState
         setRetainInstance(true);
+        currentlyLoading = false;
     }
 
     /**
@@ -180,6 +181,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
                     view.loadUrl("javascript:changeH2Style('" + item + "',false)");
                 }
             }
+            currentlyLoading = false;
         }
     }
 }
