@@ -20,7 +20,7 @@ import net.jmf.cv.R;
  * Webview Fragment
  * Created by Jean-Mi on 26/03/2014.
  */
-public class PlaceholderFragmentWebView extends Fragment {
+public class PlaceholderFragmentWebView extends Fragment implements FragmentLifecycle {
     /**
      * The fragment argument representing the section number for this
      * fragment.
@@ -37,6 +37,7 @@ public class PlaceholderFragmentWebView extends Fragment {
      *
      */
     public PlaceholderFragmentWebView() {
+        setRetainInstance(true);
     }
 
     /**
@@ -106,11 +107,7 @@ public class PlaceholderFragmentWebView extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d("BROWSER", "Dans OnResume");
-        if (mustBeRefresh) {
-            Log.d("BROWSER", "On reload");
-            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            webView.loadUrl(url);
-        }
+        onResumeFragment();
     }
 
     /**
@@ -127,6 +124,21 @@ public class PlaceholderFragmentWebView extends Fragment {
         super.onSaveInstanceState(outState);
         // Sauvegarde des données du contexte utilisateur
         //outState.putInt("curChoice", mCurCheckPosition);
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+        Log.d("BROWSER", "Dans OnResumeFragment");
+        if (mustBeRefresh) {
+            Log.d("BROWSER", "On reload");
+            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            webView.loadUrl(url);
+        }
     }
 
     /**

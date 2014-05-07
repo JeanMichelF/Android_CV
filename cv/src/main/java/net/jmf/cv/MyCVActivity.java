@@ -16,6 +16,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import net.jmf.cv.fragment.FragmentLifecycle;
 import net.jmf.cv.fragment.SectionsPagerAdapter;
 import net.jmf.cv.view.SlidingTabLayout;
 
@@ -131,6 +132,30 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         }
 */
         mViewPager.setOffscreenPageLimit(5);
+
+        mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            int currentPosition = 0;
+
+            @Override
+            public void onPageSelected(int newPosition) {
+
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle) mSectionsPagerAdapter.getItem(newPosition);
+                fragmentToShow.onResumeFragment();
+
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle) mSectionsPagerAdapter.getItem(currentPosition);
+                fragmentToHide.onPauseFragment();
+
+                currentPosition = newPosition;
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2) {
+            }
+
+            public void onPageScrollStateChanged(int arg0) {
+            }
+        });
     }
 
     /**

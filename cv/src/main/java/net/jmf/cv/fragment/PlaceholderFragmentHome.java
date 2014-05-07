@@ -39,7 +39,7 @@ import java.util.List;
  * Home Fragment
  * Created by Jean-Mi on 26/03/2014.
  */
-public class PlaceholderFragmentHome extends Fragment {
+public class PlaceholderFragmentHome extends Fragment implements FragmentLifecycle {
 
     private static final int YEAR_OF_BIRTH = 1979;
     private static final int MONTH_OF_BIRTH = Calendar.APRIL;
@@ -314,5 +314,15 @@ public class PlaceholderFragmentHome extends Fragment {
                 Log.e("handleDataPresentation","Could not update ville " + e.getMessage());
             }*/
         }
+    }
+
+    @Override
+    public void onPauseFragment() {
+        
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }
