@@ -133,18 +133,25 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
 */
         mViewPager.setOffscreenPageLimit(5);
 
+        /**
+         * Add a pagechangerlistener to call "onResumeFragment" and "onPauseFragment" when user select a new fragment
+         * This allow to fake onResume on fragment when fragment is visible
+         */
         mSlidingTabLayout.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             int currentPosition = 0;
 
             @Override
             public void onPageSelected(int newPosition) {
-
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle) mSectionsPagerAdapter.getItem(newPosition);
-                fragmentToShow.onResumeFragment();
-
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle) mSectionsPagerAdapter.getItem(currentPosition);
-                fragmentToHide.onPauseFragment();
+                // This is a very hacky way to get the good fragment, but using only "getPosition" get a non initialized fragment, or we need at least a view...
+                FragmentLifecycle frgToResume = (FragmentLifecycle) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + newPosition);
+                if (null != frgToResume) {
+                    frgToResume.onResumeFragment();
+                }
+                FragmentLifecycle frgToPause = (FragmentLifecycle) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + currentPosition);
+                if (null != frgToPause) {
+                    frgToPause.onPauseFragment();
+                }
 
                 currentPosition = newPosition;
             }

@@ -25,19 +25,21 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
      * The fragment argument representing the section number for this
      * fragment.
      */
-    protected static final String ARG_SECTION_URL = "section_number";
+    protected static final String ARG_SECTION_URL = "url";
 
     protected String url;
 
     protected Context context;
     protected WebView webView;
     protected boolean mustBeRefresh;
+    protected boolean currentlyLoading;
 
     /**
      *
      */
     public PlaceholderFragmentWebView() {
         setRetainInstance(true);
+        currentlyLoading = false;
     }
 
     /**
@@ -97,16 +99,15 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
         super.onActivityCreated(savedInstanceState);
     }
 
-    // todo gérer la rotation : sur jobs.php, avoir les mêmes choses d'ouvertes : apparemment impossible
-
     /**
      * Try to refresh the webview if it was displaying "No network found" because of
      * network unreachable and nothing in cache
+     * Used when rotating
      */
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("BROWSER", "Dans OnResume");
+        Log.d("BROWSER", "Dans OnResume " + url);
         onResumeFragment();
     }
 
@@ -118,26 +119,38 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.d("BROWSER", "Dans onSaveInstanceState " + url);
         if (null != webView) {
             webView.saveState(outState);
         }
         super.onSaveInstanceState(outState);
-        // Sauvegarde des données du contexte utilisateur
-        //outState.putInt("curChoice", mCurCheckPosition);
     }
 
+    /**
+     * Fake onPause when Fragment is not displayed
+     */
     @Override
     public void onPauseFragment() {
 
     }
 
+    /**
+     * Fake onResume when Fragment is displayed
+     * If we rotate, we have onResume called before, so we must check we're re-reloading webpage with currentlyLoading
+     */
     @Override
     public void onResumeFragment() {
-        Log.d("BROWSER", "Dans OnResumeFragment");
-        if (mustBeRefresh) {
-            Log.d("BROWSER", "On reload");
-            webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            webView.loadUrl(url);
+        if (null != url) {
+            Log.d("BROWSER", "Dans OnResumeFragment " + url + " mustBeRefresh " + mustBeRefresh + " currentlyLoading " + currentlyLoading);
+            if (mustBeRefresh && !currentlyLoading) {
+                Log.d("BROWSER", "On reload " + url);
+                webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                webView.loadUrl(url);
+                currentlyLoading = true;
+                mustBeRefresh = false;
+            }
+        } else {
+            Log.e("BROWSER", "Dans OnResumeFragment avec url null !");
         }
     }
 
@@ -182,7 +195,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
             } else if (view.getSettings().getCacheMode() == WebSettings.LOAD_CACHE_ELSE_NETWORK) {
                 Log.e("BROWSER", "No network and no cache available " + failingUrl + " " + errorCode + " " + description);
                 view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                view.loadData("<h1>Un probl&egrave;me est survenu</h1>.<h2>Avez-vous une connection &agrave; internet active ?</h2>", "text/html", "utf-8");
+                view.loadData("<h1>Un probl&egrave;me est survenu.</h1><h2>Avez-vous une connection &agrave; internet active ?</h2>", "text/html", "utf-8");
                 // No cache for the error message
                 view.clearCache(true);
                 mustBeRefresh = true;
@@ -212,6 +225,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
         public void onPageFinished(WebView view, String url) {
             Log.d("BROWSER", "Finish loading... " + url);
             super.onPageFinished(view, url);
+            currentlyLoading = false;
         }
     }
 
