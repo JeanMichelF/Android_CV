@@ -25,8 +25,9 @@ public class NetworkHttpMethod extends AsyncTask<String, Void, String> {
 
     /**
      * Make the call
-     * @param arg0  Args
-     * @return  String
+     *
+     * @param arg0 Args
+     * @return String
      */
     @Override
     protected String doInBackground(String... arg0) {
@@ -53,7 +54,8 @@ public class NetworkHttpMethod extends AsyncTask<String, Void, String> {
 
     /**
      * When fully loaded
-     * @param result    String
+     *
+     * @param result String
      */
     @Override
     protected void onPostExecute(String result) {
@@ -62,7 +64,8 @@ public class NetworkHttpMethod extends AsyncTask<String, Void, String> {
 
     /**
      * When disabled
-     * @param result    String
+     *
+     * @param result String
      */
     @Override
     protected void onCancelled(String result) {

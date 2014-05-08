@@ -58,8 +58,10 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
     private TextView textViewPresentationTitle;
     private TextView textViewLinkTitle;
     private TextView textViewSituationProfessionnelleTitle;
+    private Bundle savePause;
 
     public PlaceholderFragmentHome() {
+        setRetainInstance(true);
     }
 
     /**
@@ -134,15 +136,26 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
         textViewGithub.setMovementMethod(LinkMovementMethod.getInstance());
 
         // If we run this for the first time, let's try to get refresh datas
-        if (savedInstanceState == null) {
+        if (null == savedInstanceState && null == savePause) {
             Log.d("HOME FRAGMENT", "Full initialization");
             textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
             // Overriding if possible datas from Strings.xml with some on network or in cache
             loadDataPresentation();
         } else {
-            // Load Age
-            if (null != savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE)) {
-                textViewAge.setText(savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE));
+            Log.d("HOME FRAGMENT", "No full initialization : ");
+            if (null != savedInstanceState) {
+                Log.d("HOME FRAGMENT", " savedInstanceState " + savedInstanceState.isEmpty());
+                // Load Age
+                if (null != savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE)) {
+                    textViewAge.setText(savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE));
+                }
+            }
+            if (null != savePause) {
+                Log.d("HOME FRAGMENT", " savePause " + savePause.isEmpty());
+                // Load Age
+                if (null != savePause.getCharSequence(TEXTVIEW_AGE_VALUE)) {
+                    textViewAge.setText(savePause.getCharSequence(TEXTVIEW_AGE_VALUE));
+                }
             }
             // Overriding if possible datas from Strings.xml with some on cache
             // Usefull when rotating before completion of web call : result of webcall is in cache
@@ -316,11 +329,29 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
         }
     }
 
+    /**
+     * Make a save of a bundle like onSaveInstanceState in order to have one and only one call to web
+     */
     @Override
     public void onPauseFragment() {
-        
+        Log.d("HOME FRAGMENT", "onPauseFragment");
+        savePause = new Bundle();
+        savePause.putCharSequence(TEXTVIEW_AGE_VALUE, textViewAge.getText());
     }
 
+    /**
+     * Since onSaveInstanceState is not very well called with Fragment, we're using a call to onPauseFragment
+     * to save a bundle (strange, but setRetainInstance does not fully work as expected : fragment is recreated)
+     */
+    @Override
+    public void onPause() {
+        onPauseFragment();
+        super.onPause();
+    }
+
+    /**
+     * Could be use when home is redisplayed (not usefull yet)
+     */
     @Override
     public void onResumeFragment() {
 

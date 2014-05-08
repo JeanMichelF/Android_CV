@@ -9,19 +9,22 @@ import org.apache.http.client.methods.HttpUriRequest;
 public abstract class NetworkHttpHandler {
     /**
      * Get or Post...
-     * @return  HttpUriRequest
+     *
+     * @return HttpUriRequest
      */
     public abstract HttpUriRequest getHttpRequestMethod();
 
     /**
      * When succeeded
-     * @param result    String
+     *
+     * @param result String
      */
     public abstract void onResponse(String result);
 
     /**
      * When cancelled
-     * @param result    String
+     *
+     * @param result String
      */
     public abstract void onCancel(String result);
 
