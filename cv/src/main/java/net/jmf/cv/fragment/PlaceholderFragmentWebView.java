@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import net.jmf.cv.MyCVActivity;
 import net.jmf.cv.R;
 
 /**
@@ -68,7 +68,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
         url = getArguments().getString(ARG_SECTION_URL);
-        Log.d("DEBUG", "Création de la vue " + url);
+        MyCVActivity.d("DEBUG", "Création de la vue " + url);
 
         webView.setWebViewClient(new MyBrowser());
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
@@ -81,9 +81,9 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
         try {
             String appCachePath = getActivity().getCacheDir().getAbsolutePath();
             webView.getSettings().setAppCachePath(appCachePath);
-            Log.d("BROWSER", "App cache path : " + appCachePath);
+            MyCVActivity.d("BROWSER", "App cache path : " + appCachePath);
         } catch (NullPointerException e) {
-            Log.d("BROWSER", "Error setting app cache : " + e.getMessage());
+            MyCVActivity.d("BROWSER", "Error setting app cache : " + e.getMessage());
         }
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
@@ -107,7 +107,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("BROWSER", "Dans OnResume " + url);
+        MyCVActivity.d("BROWSER", "Dans OnResume " + url);
         onResumeFragment();
     }
 
@@ -119,7 +119,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d("BROWSER", "Dans onSaveInstanceState " + url);
+        MyCVActivity.d("BROWSER", "Dans onSaveInstanceState " + url);
         if (null != webView) {
             webView.saveState(outState);
         }
@@ -141,16 +141,16 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
     @Override
     public void onResumeFragment() {
         if (null != url) {
-            Log.d("BROWSER", "Dans OnResumeFragment " + url + " mustBeRefresh " + mustBeRefresh + " currentlyLoading " + currentlyLoading);
+            MyCVActivity.d("BROWSER", "Dans OnResumeFragment " + url + " mustBeRefresh " + mustBeRefresh + " currentlyLoading " + currentlyLoading);
             if (mustBeRefresh && !currentlyLoading) {
-                Log.d("BROWSER", "On reload " + url);
+                MyCVActivity.d("BROWSER", "On reload " + url);
                 webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
                 webView.loadUrl(url);
                 currentlyLoading = true;
                 mustBeRefresh = false;
             }
         } else {
-            Log.e("BROWSER", "Dans OnResumeFragment avec url null !");
+            MyCVActivity.i("BROWSER", "Error : Dans OnResumeFragment avec url null !");
         }
     }
 
@@ -168,7 +168,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 context.startActivity(intent);
             } catch (NullPointerException e) {
-                Log.e("BROWSER", "Error accessing browser external to WebView : " + e.getMessage());
+                MyCVActivity.i("BROWSER", "Error accessing browser external to WebView : " + e.getMessage());
             }
             return true;
         }
@@ -183,17 +183,17 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
          */
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            Log.e("BROWSER", failingUrl + " " + errorCode + " " + description);
+            MyCVActivity.i("BROWSER", failingUrl + " " + errorCode + " " + description);
             // Seems that there isn't a network around there
             if (view.getSettings().getCacheMode() == WebSettings.LOAD_NO_CACHE) {
-                Log.e("BROWSER", "No network available for " + failingUrl + " " + errorCode + " " + description);
+                MyCVActivity.i("BROWSER", "No network available for " + failingUrl + " " + errorCode + " " + description);
                 // Using LOAD_CACHE_ELSE_NETWORK makes a retry via network (this things can be capricious)
                 view.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                 view.loadUrl(failingUrl);
                 mustBeRefresh = false;
                 // Seems that there isn't a network around there and no cache neither !
             } else if (view.getSettings().getCacheMode() == WebSettings.LOAD_CACHE_ELSE_NETWORK) {
-                Log.e("BROWSER", "No network and no cache available " + failingUrl + " " + errorCode + " " + description);
+                MyCVActivity.i("BROWSER", "No network and no cache available " + failingUrl + " " + errorCode + " " + description);
                 view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
                 view.loadData("<h1>Un probl&egrave;me est survenu.</h1><h2>Avez-vous une connection &agrave; internet active ?</h2>", "text/html", "utf-8");
                 // No cache for the error message
@@ -211,7 +211,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
          */
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            Log.d("BROWSER", "Loading... " + url);
+            MyCVActivity.d("BROWSER", "Loading... " + url);
             super.onPageStarted(view, url, favicon);
         }
 
@@ -223,7 +223,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
          */
         @Override
         public void onPageFinished(WebView view, String url) {
-            Log.d("BROWSER", "Finish loading... " + url);
+            MyCVActivity.d("BROWSER", "Finish loading... " + url);
             super.onPageFinished(view, url);
             currentlyLoading = false;
         }

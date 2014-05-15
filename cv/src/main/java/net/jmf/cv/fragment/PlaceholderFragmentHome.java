@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,7 +87,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
         textViewPresentationTitle = (TextView) rootView.findViewById(R.id.presentation_title);
         textViewLinkTitle = (TextView) rootView.findViewById(R.id.surleweb_title);
         textViewSituationProfessionnelleTitle = (TextView) rootView.findViewById(R.id.situation_professionnelle_title);
-        Log.d("DEBUG", "Création de la vue home");
+        MyCVActivity.d("DEBUG", "Création de la vue home");
         return rootView;
     }
 
@@ -137,21 +136,21 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
 
         // If we run this for the first time, let's try to get refresh datas
         if (null == savedInstanceState && null == savePause) {
-            Log.d("HOME FRAGMENT", "Full initialization");
+            MyCVActivity.d("HOME FRAGMENT", "Full initialization");
             textViewAge.setText(Integer.toString(getMyAge()) + " " + context.getString(R.string.home_age));
             // Overriding if possible datas from Strings.xml with some on network or in cache
             loadDataPresentation();
         } else {
-            Log.d("HOME FRAGMENT", "No full initialization : ");
+            MyCVActivity.d("HOME FRAGMENT", "No full initialization : ");
             if (null != savedInstanceState) {
-                Log.d("HOME FRAGMENT", " savedInstanceState " + savedInstanceState.isEmpty());
+                MyCVActivity.d("HOME FRAGMENT", " savedInstanceState " + savedInstanceState.isEmpty());
                 // Load Age
                 if (null != savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE)) {
                     textViewAge.setText(savedInstanceState.getCharSequence(TEXTVIEW_AGE_VALUE));
                 }
             }
             if (null != savePause) {
-                Log.d("HOME FRAGMENT", " savePause " + savePause.isEmpty());
+                MyCVActivity.d("HOME FRAGMENT", " savePause " + savePause.isEmpty());
                 // Load Age
                 if (null != savePause.getCharSequence(TEXTVIEW_AGE_VALUE)) {
                     textViewAge.setText(savePause.getCharSequence(TEXTVIEW_AGE_VALUE));
@@ -203,7 +202,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
      * Load data from an URL
      */
     private void loadFromWeb() {
-        Log.d("loadFromWeb", "Load from Web");
+        MyCVActivity.d("loadFromWeb", "Load from Web");
         new NetworkHttpHandler() {
 
             @Override
@@ -216,11 +215,11 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
                 // Create a JSON object from the request response
                 try {
                     JSONObject jsonObject = new JSONObject(result);
-                    Log.d("loadFromWeb", "Load from Web result " + result);
+                    MyCVActivity.d("loadFromWeb", "Load from Web result " + result);
                     saveIntoCache(jsonObject);
                     handleDataPresentation(jsonObject);
                 } catch (JSONException e) {
-                    Log.e("loadFromWeb", "Could not convert into JSONObject " + e.getMessage());
+                    MyCVActivity.i("loadFromWeb", "Could not convert into JSONObject " + e.getMessage());
                     loadFromCache();
                 }
             }
@@ -237,7 +236,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
      * Load data from cache
      */
     private void loadFromCache() {
-        Log.d("loadFromCache", "Load from Cache");
+        MyCVActivity.d("loadFromCache", "Load from Cache");
         /** Reading contents of the temporary file, if already exists */
         try {
             File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
@@ -251,7 +250,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             JSONObject jsonObject = new JSONObject(text.toString());
             handleDataPresentation(jsonObject);
         } catch (IOException | NullPointerException | JSONException e) {
-            Log.d("loadFromCache", "Error loading file " + e.getMessage());
+            MyCVActivity.i("loadFromCache", "Error loading file " + e.getMessage());
         }
     }
 
@@ -266,7 +265,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             writer.write(object.toString());
             writer.close();
         } catch (IOException | NullPointerException e) {
-            Log.d("saveIntoCache", "Error saving file " + e.getMessage());
+            MyCVActivity.i("saveIntoCache", "Error saving file " + e.getMessage());
         }
     }
 
@@ -287,44 +286,44 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             try {
                 textViewSituationMaritale.setText(datas.getString("situationMaritale"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update situationMaritale " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update situationMaritale " + e.getMessage());
             }
             try {
                 textViewPresentation.setText(datas.getString("presentation"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update presentation " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update presentation " + e.getMessage());
             }
             /* Not yet
             try {
                 textViewGithub.setText(datas.getString("urlGithub"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation","Could not update urlGithub " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation","Could not update urlGithub " + e.getMessage());
             }*/
             try {
                 textViewEmail.setText(datas.getString("email"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update email " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update email " + e.getMessage());
             }
             try {
                 textViewSituationProfessionnelle.setText(datas.getString("situationProfessionnelle"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update situationProfessionnelle " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update situationProfessionnelle " + e.getMessage());
             }
             try {
                 textViewSituationCarriere.setText(datas.getString("situationCarriere"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update situationCarriere " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update situationCarriere " + e.getMessage());
             }
             try {
                 textViewPermis.setText(datas.getString("permis"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation", "Could not update permis " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation", "Could not update permis " + e.getMessage());
             }
             /* Not yet
             try {
                 textViewVille.setText(datas.getString("ville"));
             } catch (JSONException e) {
-                Log.e("handleDataPresentation","Could not update ville " + e.getMessage());
+                MyCVActivity.i("handleDataPresentation","Could not update ville " + e.getMessage());
             }*/
         }
     }
@@ -334,7 +333,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
      */
     @Override
     public void onPauseFragment() {
-        Log.d("HOME FRAGMENT", "onPauseFragment");
+        MyCVActivity.d("HOME FRAGMENT", "onPauseFragment");
         savePause = new Bundle();
         savePause.putCharSequence(TEXTVIEW_AGE_VALUE, textViewAge.getText());
     }

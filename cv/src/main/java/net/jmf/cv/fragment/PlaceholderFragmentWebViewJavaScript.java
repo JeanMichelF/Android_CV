@@ -2,13 +2,14 @@ package net.jmf.cv.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import net.jmf.cv.MyCVActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
     @Override
     @SuppressLint("SetJavaScriptEnabled")
     public void onActivityCreated(Bundle savedInstanceState) {
-        Log.d("DEBUG", "Création de la vue PlaceholderFragmentWebViewJavaScript " + url);
+        MyCVActivity.d("DEBUG", "Création de la vue PlaceholderFragmentWebViewJavaScript " + url);
         super.webView.getSettings().setJavaScriptEnabled(true);
 
         super.webView.setOnTouchListener(new View.OnTouchListener() {
@@ -70,7 +71,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         super.webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage cm) {
-                Log.i("PlaceholderFragmentWebViewJavaScript", cm.message() + " #" + cm.lineNumber() + " --" + cm.sourceId());
+                MyCVActivity.i("PlaceholderFragmentWebViewJavaScript", cm.message() + " #" + cm.lineNumber() + " --" + cm.sourceId());
                 return true;
             }
         });
@@ -119,7 +120,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
          */
         @JavascriptInterface
         public void saveClick(String idDomElement, boolean mustAdd) {
-            Log.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " clicked");
+            MyCVActivity.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " clicked");
             // If it exist then delete instead of add
             if (mustAdd) {
                 if (!placeholderFragmentWebViewJavaScript.getListClikedItems().contains(idDomElement)) {
@@ -138,7 +139,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
          */
         @JavascriptInterface
         public void saveStyle(String idDomElement, boolean mustAdd) {
-            Log.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " style clicked and must Add : " + mustAdd);
+            MyCVActivity.d("PlaceholderFragmentWebViewJavaScript", idDomElement + " style clicked and must Add : " + mustAdd);
             // If it exist then delete instead of add
             if (mustAdd) {
                 if (!placeholderFragmentWebViewJavaScript.getListStyleClikedItems().contains(idDomElement)) {
@@ -160,13 +161,13 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
          */
         @Override
         public void onPageFinished(WebView view, String url) {
-            Log.i("BROWSER JS", "Finish loading... " + url);
+            MyCVActivity.i("BROWSER JS", "Finish loading... " + url);
             // If there were some clicked items, let's reclick them as they were
             if (!listClikedItems.isEmpty()) {
                 ArrayList<String> listClikedItemsTmp = new ArrayList<>();
                 listClikedItemsTmp.addAll(listClikedItems);
                 for (String item : listClikedItemsTmp) {
-                    Log.i("onPageFinished", "CLICK ON SAVED : " + item);
+                    MyCVActivity.i("onPageFinished", "CLICK ON SAVED : " + item);
                     // Refresh and redisplay everything which has been clicked
                     view.loadUrl("javascript:toggleVisible('" + item + "',false)");
                 }
@@ -176,7 +177,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
                 ArrayList<String> listStyleClikedItemsTmp = new ArrayList<>();
                 listStyleClikedItemsTmp.addAll(listStyleClikedItems);
                 for (String item : listStyleClikedItemsTmp) {
-                    Log.i("onPageFinished", "STYLE CLICK ON SAVED : " + item);
+                    MyCVActivity.i("onPageFinished", "STYLE CLICK ON SAVED : " + item);
                     // Refresh and redisplay everything which has been clicked
                     view.loadUrl("javascript:changeH2Style('" + item + "',false)");
                 }

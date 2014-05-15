@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -23,6 +24,11 @@ import net.jmf.cv.view.SlidingTabLayout;
 import java.util.List;
 
 public class MyCVActivity extends ActionBarActivity implements ActionBar.TabListener {
+
+    /**
+     * Usefull for displaying logs only in Debug
+     */
+    public static final boolean SHOW_LOG = BuildConfig.DEBUG;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -88,10 +94,6 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             MyCVActivity.brandGlowEffect(getBaseContext(), getResources().getColor(R.color.cvtheme_color));
         }
-        // TODO remove the comment when fully satisfied with the theme
-        // Set up the action bar.
-        //final ActionBar actionBar = getSupportActionBar();
-        //actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -101,36 +103,12 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-/*
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-*/
         // Give the SlidingTabLayout the ViewPager, this must be done AFTER the ViewPager has had
         // it's PagerAdapter set.
         mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.cvtheme_color));
         mSlidingTabLayout.setViewPager(mViewPager);
 
-/*
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }
-*/
         mViewPager.setOffscreenPageLimit(5);
 
         /**
@@ -214,5 +192,27 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      */
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+    }
+
+    /**
+     * Over ride Log methods : log only in debug
+     * @param tag
+     * @param msg
+     */
+    public static void d(final String tag, final String msg) {
+        if (SHOW_LOG) {
+            Log.d(tag, msg);
+        }
+    }
+
+    /**
+     * Over ride Log methods : log only in debug, even for info logs
+     * @param tag
+     * @param msg
+     */
+    public static void i(final String tag, final String msg) {
+        if (SHOW_LOG) {
+            Log.i(tag, msg);
+        }
     }
 }
