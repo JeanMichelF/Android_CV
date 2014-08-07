@@ -72,14 +72,18 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @param brandColor Color
      */
     public static void brandGlowEffect(Context context, int brandColor) {
-        //glow
-        int glowDrawableId = context.getResources().getIdentifier("overscroll_glow", "drawable", "android");
-        Drawable androidGlow = context.getResources().getDrawable(glowDrawableId);
-        androidGlow.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
-        //edge
-        int edgeDrawableId = context.getResources().getIdentifier("overscroll_edge", "drawable", "android");
-        Drawable androidEdge = context.getResources().getDrawable(edgeDrawableId);
-        androidEdge.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
+        try {
+            //glow
+            int glowDrawableId = context.getResources().getIdentifier("overscroll_glow", "drawable", "android");
+            Drawable androidGlow = context.getResources().getDrawable(glowDrawableId);
+            androidGlow.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
+            //edge
+            int edgeDrawableId = context.getResources().getIdentifier("overscroll_edge", "drawable", "android");
+            Drawable androidEdge = context.getResources().getDrawable(edgeDrawableId);
+            androidEdge.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
+        } catch (Exception e) {
+            MyCVActivity.d("GlowEffect","Seems that this device doesn't like this effect !");
+        }
     }
 
     /**
