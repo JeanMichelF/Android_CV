@@ -1,5 +1,6 @@
 package net.jmf.cv;
 
+import android.content.ContentProviderOperation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -16,11 +18,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import net.jmf.cv.fragment.CVDialogFragment;
 import net.jmf.cv.fragment.FragmentLifecycle;
 import net.jmf.cv.fragment.SectionsPagerAdapter;
 import net.jmf.cv.view.SlidingTabLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MyCVActivity extends ActionBarActivity implements ActionBar.TabListener {
@@ -82,7 +87,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
             Drawable androidEdge = context.getResources().getDrawable(edgeDrawableId);
             androidEdge.setColorFilter(brandColor, PorterDuff.Mode.SRC_IN);
         } catch (Exception e) {
-            MyCVActivity.d("GlowEffect","Seems that this device doesn't like this effect !");
+            MyCVActivity.d("GlowEffect", "Seems that this device doesn't like this effect !");
         }
     }
 
@@ -168,7 +173,38 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        return id == R.id.action_settings || super.onOptionsItemSelected(item);
+        switch (id) {
+            case R.id.menu_add_contact:
+                final MenuItem itemAddContact = item;
+                final CVDialogFragment dialog = CVDialogFragment.newInstance(
+                        getResources().getString(R.string.action_addme),
+                        getResources().getString(R.string.action_addme_text),
+                        CVDialogFragment.TYPE_YESNO_DIALOG,
+                        getResources().getColor(R.color.cvtheme_color));
+                dialog.setOnDialogOptionClickListenerNegative(new CVDialogFragment.OnDialogOptionClickListener() {
+                    @Override
+                    public void onDialogOptionPressed() {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnDialogOptionClickListenerPositive(new CVDialogFragment.OnDialogOptionClickListener() {
+                    @Override
+                    public void onDialogOptionPressed() {
+                        if (createNewContact()) {
+                            itemAddContact.setVisible(false);
+                            itemAddContact.setEnabled(false);
+                        }
+                    }
+                });
+                dialog.show(getSupportFragmentManager(), "AddMeContactTag");
+
+                return true;
+
+            case R.id.action_about:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
@@ -199,9 +235,82 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     /**
+     * Create a new contact : me
+     *
+     * @return boolean success
+     */
+    private boolean createNewContact() {
+        boolean retour = false;
+
+        ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .build());
+
+        // ------------------------------------------------------ Names
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(
+                        ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                .withValue(
+                        ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
+                        getResources().getString(R.string.action_addme_prenom) + " "
+                                + getResources().getString(R.string.action_addme_nom)).build());
+
+        // ------------------------------------------------------ Email
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(
+                        ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(
+                        ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Email.DATA,
+                        getResources().getString(R.string.action_addme_email))
+                .withValue(ContactsContract.CommonDataKinds.Email.TYPE,
+                        ContactsContract.CommonDataKinds.Email.TYPE_WORK)
+                .build());
+
+        // ------------------------------------------------------ Organization
+        ops.add(ContentProviderOperation
+                .newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(
+                        ContactsContract.Data.RAW_CONTACT_ID, 0)
+                .withValue(
+                        ContactsContract.Data.MIMETYPE,
+                        ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE)
+                .withValue(
+                        ContactsContract.CommonDataKinds.Organization.TITLE,
+                        getResources().getString(R.string.action_addme_profession))
+                .withValue(
+                        ContactsContract.CommonDataKinds.Organization.TYPE,
+                        ContactsContract.CommonDataKinds.Organization.TYPE_WORK)
+                .build());
+
+        // Asking the Contact provider to create a new contact
+        try {
+            getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+            Toast.makeText(this, getResources().getString(R.string.action_addme_success),
+                    Toast.LENGTH_SHORT).show();
+            retour = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, getResources().getString(R.string.action_addme_error),
+                    Toast.LENGTH_SHORT).show();
+        }
+        return retour;
+    }
+
+    /**
      * Over ride Log methods : log only in debug
-     * @param tag
-     * @param msg
+     *
+     * @param tag   Tag
+     * @param msg   Message
      */
     public static void d(final String tag, final String msg) {
         if (SHOW_LOG) {
@@ -211,12 +320,14 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
 
     /**
      * Over ride Log methods : log only in debug, even for info logs
-     * @param tag
-     * @param msg
+     *
+     * @param tag   Tag
+     * @param msg   Message
      */
     public static void i(final String tag, final String msg) {
         if (SHOW_LOG) {
             Log.i(tag, msg);
         }
     }
+
 }

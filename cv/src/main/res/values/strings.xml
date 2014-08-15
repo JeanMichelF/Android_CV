@@ -7,13 +7,21 @@
     <string name="title_section3">Compétence</string>
     <string name="title_section4">Formation</string>
     <string name="title_section5">Loisir</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_addme">M\'ajouter comme contact</string>
+    <string name="action_addme_text">Voulez-vous m\'ajouter parmi vos contacts ?</string>
+    <string name="action_addme_success">Ajout réussi</string>
+    <string name="action_addme_error">Echec lors de l\'ajout</string>
+    <string name="annuler">Annuler</string>
+    <string name="action_about">A propos</string>
     <string name="url_section1">http://www.jeanmichelfahys.net/android/presentation.php</string>
     <string name="url_section2">http://www.jeanmichelfahys.net/android/jobs.php</string>
     <string name="url_section3">http://www.jeanmichelfahys.net/android/skills.php</string>
     <string name="url_section4">http://www.jeanmichelfahys.net/android/trainings.php</string>
     <string name="url_section5">http://www.jeanmichelfahys.net/android/hobbies.php</string>
-
+    <string name="action_addme_prenom">Jean-Michel</string>
+    <string name="action_addme_nom">Fahys</string>
+    <string name="action_addme_email">cv@jeanmichelfahys.net</string>
+    <string name="action_addme_profession">Ingénieur d\'études sénior</string>
     <string name="home_age">ans</string>
     <string name="home_permis">Permis de conduire</string>
     <string name="home_situation_maritale">Célibataire</string>
@@ -28,6 +36,5 @@
     <string name="home_situation_professionnelle">En poste</string>
     <string name="home_situation_carriere">Ouvert aux opportunités</string>
     <string name="home_city">Bordeaux</string>
-
     <string name="error_email_app_absent">Veuillez installer un client mail.</string>
 </resources>
