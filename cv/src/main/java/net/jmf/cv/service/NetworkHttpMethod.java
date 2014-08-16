@@ -3,6 +3,8 @@ package net.jmf.cv.service;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.jmf.cv.MyCVActivity;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -47,7 +49,7 @@ public class NetworkHttpMethod extends AsyncTask<String, Void, String> {
             result = EntityUtils.toString(entity);
 
         } catch (Exception e) {
-            Log.e("NetworkHTTPGet", "Error: ", e);
+            MyCVActivity.e("NetworkHTTPGet", "Error: ", e);
         }
         return result;
     }

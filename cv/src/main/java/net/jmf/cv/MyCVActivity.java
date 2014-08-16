@@ -339,4 +339,16 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
+    /**
+     * Over ride Log methods : log only in debug, even for info logs
+     *
+     * @param tag   Tag
+     * @param msg   Message
+     * @param e     Throwable
+     */
+    public static void e(final String tag, final String msg, final Throwable e) {
+        if (SHOW_LOG) {
+            Log.e(tag, msg, e);
+        }
+    }
 }
