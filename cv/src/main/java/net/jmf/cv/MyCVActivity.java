@@ -176,18 +176,18 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
         switch (id) {
             case R.id.menu_add_contact:
                 final MenuItem itemAddContact = item;
-                final CVDialogFragment dialog = CVDialogFragment.newInstance(
+                final CVDialogFragment dialogAddMe = CVDialogFragment.newInstance(
                         getResources().getString(R.string.action_addme),
                         getResources().getString(R.string.action_addme_text),
                         CVDialogFragment.TYPE_YESNO_DIALOG,
                         getResources().getColor(R.color.cvtheme_color));
-                dialog.setOnDialogOptionClickListenerNegative(new CVDialogFragment.OnDialogOptionClickListener() {
+                dialogAddMe.setOnDialogOptionClickListenerNegative(new CVDialogFragment.OnDialogOptionClickListener() {
                     @Override
                     public void onDialogOptionPressed() {
-                        dialog.dismiss();
+                        dialogAddMe.dismiss();
                     }
                 });
-                dialog.setOnDialogOptionClickListenerPositive(new CVDialogFragment.OnDialogOptionClickListener() {
+                dialogAddMe.setOnDialogOptionClickListenerPositive(new CVDialogFragment.OnDialogOptionClickListener() {
                     @Override
                     public void onDialogOptionPressed() {
                         if (createNewContact()) {
@@ -196,11 +196,21 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
                         }
                     }
                 });
-                dialog.show(getSupportFragmentManager(), "AddMeContactTag");
-
+                dialogAddMe.show(getSupportFragmentManager(), "AddMeContactTag");
                 return true;
-
             case R.id.action_about:
+                final CVDialogFragment dialogAbout = CVDialogFragment.newInstance(
+                        getResources().getString(R.string.action_about),
+                        getResources().getString(R.string.action_about_texte),
+                        CVDialogFragment.TYPE_OK_DIALOG,
+                        getResources().getColor(R.color.cvtheme_color));
+                dialogAbout.setOnDialogOptionClickListenerPositive(new CVDialogFragment.OnDialogOptionClickListener() {
+                    @Override
+                    public void onDialogOptionPressed() {
+                        dialogAbout.dismiss();
+                    }
+                });
+                dialogAbout.show(getSupportFragmentManager(), "AboutTag");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -299,7 +309,6 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
                     Toast.LENGTH_SHORT).show();
             retour = true;
         } catch (Exception e) {
-            e.printStackTrace();
             Toast.makeText(this, getResources().getString(R.string.action_addme_error),
                     Toast.LENGTH_SHORT).show();
         }
