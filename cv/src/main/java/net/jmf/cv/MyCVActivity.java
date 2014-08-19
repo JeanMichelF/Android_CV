@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
@@ -33,7 +34,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
     /**
      * Usefull for displaying logs only in Debug
      */
-    public static final boolean SHOW_LOG = BuildConfig.DEBUG;
+    public static final boolean DEBUG_MODE = BuildConfig.DEBUG;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -96,6 +97,9 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (DEBUG_MODE && (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD)) {
+            StrictMode.enableDefaults();
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -322,7 +326,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @param msg   Message
      */
     public static void d(final String tag, final String msg) {
-        if (SHOW_LOG) {
+        if (DEBUG_MODE) {
             Log.d(tag, msg);
         }
     }
@@ -334,7 +338,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @param msg   Message
      */
     public static void i(final String tag, final String msg) {
-        if (SHOW_LOG) {
+        if (DEBUG_MODE) {
             Log.i(tag, msg);
         }
     }
@@ -347,7 +351,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @param e     Throwable
      */
     public static void e(final String tag, final String msg, final Throwable e) {
-        if (SHOW_LOG) {
+        if (DEBUG_MODE) {
             Log.e(tag, msg, e);
         }
     }

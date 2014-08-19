@@ -49,7 +49,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
     @Override
     @SuppressLint("SetJavaScriptEnabled")
     public void onActivityCreated(Bundle savedInstanceState) {
-        MyCVActivity.d("DEBUG", "Création de la vue PlaceholderFragmentWebViewJavaScript " + url);
+        MyCVActivity.d("DEBUG_MODE", "Création de la vue PlaceholderFragmentWebViewJavaScript " + url);
         super.webView.getSettings().setJavaScriptEnabled(true);
 
         super.webView.setOnTouchListener(new View.OnTouchListener() {
@@ -68,13 +68,15 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         super.webView.addJavascriptInterface(new WebAppInterface(this), "CallToAnAndroidFunction");
 
         // for debugging, this will handle the console.log() in Javascript
-        super.webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage cm) {
-                MyCVActivity.i("PlaceholderFragmentWebViewJavaScript", cm.message() + " #" + cm.lineNumber() + " --" + cm.sourceId());
-                return true;
-            }
-        });
+        if (MyCVActivity.DEBUG_MODE) {
+            super.webView.setWebChromeClient(new WebChromeClient() {
+                @Override
+                public boolean onConsoleMessage(ConsoleMessage cm) {
+                    MyCVActivity.i("PlaceholderFragmentWebViewJavaScript", cm.message() + " #" + cm.lineNumber() + " --" + cm.sourceId());
+                    return true;
+                }
+            });
+        }
 
         super.onActivityCreated(savedInstanceState);
 

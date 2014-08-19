@@ -68,7 +68,7 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
     public void onActivityCreated(Bundle savedInstanceState) {
         context = getActivity();
         url = getArguments().getString(ARG_SECTION_URL);
-        MyCVActivity.d("DEBUG", "Création de la vue " + url);
+        MyCVActivity.d("DEBUG_MODE", "Création de la vue " + url);
 
         webView.setWebViewClient(new MyBrowser());
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);

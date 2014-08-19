@@ -87,7 +87,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
         textViewPresentationTitle = (TextView) rootView.findViewById(R.id.presentation_title);
         textViewLinkTitle = (TextView) rootView.findViewById(R.id.surleweb_title);
         textViewSituationProfessionnelleTitle = (TextView) rootView.findViewById(R.id.situation_professionnelle_title);
-        MyCVActivity.d("DEBUG", "Création de la vue home");
+        MyCVActivity.d("DEBUG_MODE", "Création de la vue home");
         return rootView;
     }
 
@@ -238,19 +238,28 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
     private void loadFromCache() {
         MyCVActivity.d("loadFromCache", "Load from Cache");
         /** Reading contents of the temporary file, if already exists */
+        FileReader fReader = null;
+        String strLine;
         try {
             File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
-            FileReader fReader = new FileReader(tempFile);
+            fReader = new FileReader(tempFile);
             BufferedReader bReader = new BufferedReader(fReader);
             StringBuilder text = new StringBuilder();
-            String strLine;
             while ((strLine = bReader.readLine()) != null) {
                 text.append(strLine);
             }
             JSONObject jsonObject = new JSONObject(text.toString());
             handleDataPresentation(jsonObject);
         } catch (IOException | NullPointerException | JSONException e) {
-            MyCVActivity.i("loadFromCache", "Error loading file " + e.getMessage());
+            MyCVActivity.e("loadFromCache", "Error loading file " + e.getMessage(), e);
+        } finally {
+            try {
+                if (fReader != null) {
+                    fReader.close();
+                }
+            } catch (IOException io) {
+                MyCVActivity.e("loadFromCache", "Error closing file " + io.getMessage(), io);
+            }
         }
     }
 
