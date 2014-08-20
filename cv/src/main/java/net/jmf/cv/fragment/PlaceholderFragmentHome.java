@@ -3,6 +3,7 @@ package net.jmf.cv.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -238,7 +239,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
     private void loadFromCache() {
         MyCVActivity.d("loadFromCache", "Load from Cache");
         /** Reading contents of the temporary file, if already exists */
-        FileReader fReader = null;
+        /*FileReader fReader = null;
         String strLine;
         try {
             File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
@@ -260,21 +261,110 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             } catch (IOException io) {
                 MyCVActivity.e("loadFromCache", "Error closing file " + io.getMessage(), io);
             }
+        }*/
+        new AsyncLoadFromCache().execute();
+    }
+
+    private class AsyncLoadFromCache extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            return getFileContent();
+        }
+
+        @Override
+        protected void onPostExecute(String text) {
+            super.onPostExecute(text);
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(text);
+            } catch (JSONException e) {
+                MyCVActivity.e("loadFromCache", "Error loading file " + e.getMessage(), e);
+            }
+            handleDataPresentation(jsonObject);
+        }
+
+        private String getFileContent() {
+            /** Reading contents of the temporary file, if already exists */
+            FileReader fReader = null;
+            String strLine;
+            StringBuilder text = new StringBuilder();
+            try {
+                File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
+                fReader = new FileReader(tempFile);
+                BufferedReader bReader = new BufferedReader(fReader);
+                while ((strLine = bReader.readLine()) != null) {
+                    text.append(strLine);
+                }
+            } catch (IOException | NullPointerException e) {
+                MyCVActivity.e("loadFromCache", "Error loading file " + e.getMessage(), e);
+            } finally {
+                try {
+                    if (fReader != null) {
+                        fReader.close();
+                    }
+                } catch (IOException io) {
+                    MyCVActivity.e("loadFromCache", "Error closing file " + io.getMessage(), io);
+                }
+            }
+            return text.toString();
         }
     }
+
 
     /**
      * Save data into cache
      */
     private void saveIntoCache(Object object) {
         /** Create a tempfile and save it into app cache */
+        /*FileWriter writer = null;
         try {
             File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
-            FileWriter writer = new FileWriter(tempFile);
+            writer = new FileWriter(tempFile);
             writer.write(object.toString());
-            writer.close();
         } catch (IOException | NullPointerException e) {
             MyCVActivity.i("saveIntoCache", "Error saving file " + e.getMessage());
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException io) {
+                MyCVActivity.e("saveIntoCache", "Error closing file " + io.getMessage(), io);
+            }
+        }*/
+        new AsyncSaveIntoCache().execute(object);
+    }
+
+    private class AsyncSaveIntoCache extends AsyncTask<Object, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Object... objects) {
+            return saveFileContent(objects);
+        }
+
+        private boolean saveFileContent(Object... objects) {
+            Boolean retour = false;
+            /** Create a tempfile and save it into app cache */
+            FileWriter writer = null;
+            try {
+                File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
+                writer = new FileWriter(tempFile);
+                Object object = objects[0];
+                writer.write(object.toString());
+                retour = true;
+            } catch (IOException | NullPointerException e) {
+                MyCVActivity.i("saveIntoCache", "Error saving file " + e.getMessage());
+            } finally {
+                try {
+                    if (writer != null) {
+                        writer.close();
+                    }
+                } catch (IOException io) {
+                    MyCVActivity.e("saveIntoCache", "Error closing file " + io.getMessage(), io);
+                }
+            }
+            return retour;
         }
     }
 
