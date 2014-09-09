@@ -2,6 +2,7 @@ package net.jmf.cv.fragment;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -22,8 +23,8 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
 
     public static final String CLICKED_ITEMS = "clickedItems";
     public static final String CLICKED_STYLE_ITEMS = "clickedStyleItems";
-    public List<String> listClikedItems;
-    public List<String> listStyleClikedItems;
+    private final List<String> listClikedItems;
+    private final List<String> listStyleClikedItems;
 
     /**
      *
@@ -71,7 +72,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
         if (MyCVActivity.DEBUG_MODE) {
             super.webView.setWebChromeClient(new WebChromeClient() {
                 @Override
-                public boolean onConsoleMessage(ConsoleMessage cm) {
+                public boolean onConsoleMessage(@NonNull ConsoleMessage cm) {
                     MyCVActivity.i("PlaceholderFragmentWebViewJavaScript", cm.message() + " #" + cm.lineNumber() + " --" + cm.sourceId());
                     return true;
                 }
@@ -88,7 +89,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
      *
      * @return List<String>
      */
-    public List<String> getListClikedItems() {
+    List<String> getListClikedItems() {
         return listClikedItems;
     }
 
@@ -97,7 +98,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
      *
      * @return List<String>
      */
-    public List<String> getListStyleClikedItems() {
+    List<String> getListStyleClikedItems() {
         return listStyleClikedItems;
     }
 
@@ -105,7 +106,7 @@ public class PlaceholderFragmentWebViewJavaScript extends PlaceholderFragmentWeb
      * Handles connexions between Android and JavaScript
      */
     private class WebAppInterface {
-        private PlaceholderFragmentWebViewJavaScript placeholderFragmentWebViewJavaScript;
+        private final PlaceholderFragmentWebViewJavaScript placeholderFragmentWebViewJavaScript;
 
         /**
          * Instantiate the interface and set the context

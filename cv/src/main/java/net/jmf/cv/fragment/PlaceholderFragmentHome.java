@@ -8,7 +8,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
+import android.text.style.UnderlineSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,6 +52,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
     private TextView textViewAge;
     private TextView textViewSituationMaritale;
     private TextView textViewPermis;
+    private TextView textViewCity;
     private TextView textViewPresentation;
     private TextView textViewGithub;
     private TextView textViewEmail;
@@ -59,6 +62,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
     private TextView textViewLinkTitle;
     private TextView textViewSituationProfessionnelleTitle;
     private Bundle savePause;
+    private boolean canHandleEmailIntent = false;
 
     public PlaceholderFragmentHome() {
         setRetainInstance(true);
@@ -79,6 +83,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
         assert rootView != null;
         textViewAge = (TextView) rootView.findViewById(R.id.age);
         textViewSituationMaritale = (TextView) rootView.findViewById(R.id.situation_maritale);
+        textViewCity =  (TextView) rootView.findViewById(R.id.city);
         textViewPresentation = (TextView) rootView.findViewById(R.id.presentation);
         textViewGithub = (TextView) rootView.findViewById(R.id.github);
         textViewEmail = (TextView) rootView.findViewById(R.id.email);
@@ -111,26 +116,28 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             }
         }
 
-        // Disabling link in Android previous to ICS : make the app crash when no email app is created
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        // Disabling link in Android when no Intent handler is Available : make the app crash when no email app is created
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", textViewEmail.getText().toString(), null));
+        canHandleEmailIntent = MyCVActivity.isAvailable(context, emailIntent);
+        if (canHandleEmailIntent) {
+            textViewEmail.setAutoLinkMask(Linkify.EMAIL_ADDRESSES);
+            textViewEmail.setText(R.string.home_email);
+        } else {
             textViewEmail.setTextColor(textViewEmail.getLinkTextColors().getDefaultColor());
             //textViewEmail.setPaintFlags(Paint.UNDERLINE_TEXT_FLAG);
             textViewEmail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", textViewEmail.getText().toString(), null));
-                    if (MyCVActivity.isAvailable(context, emailIntent)) {
-                        startActivity(Intent.createChooser(emailIntent, "Send email..."));
-                    } else {
-                        Toast.makeText(context, R.string.error_email_app_absent, Toast.LENGTH_LONG).show();
-                    }
+                    Toast.makeText(context, R.string.error_email_app_absent, Toast.LENGTH_LONG).show();
                 }
             });
-        } else {
-            textViewEmail.setAutoLinkMask(Linkify.EMAIL_ADDRESSES);
+            SpannableString spanString = new SpannableString(getResources().getString(R.string.home_email));
+            spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
+            textViewEmail.setText(spanString);
         }
-        textViewEmail.setText(R.string.home_email);
+
+
         // URL for Github clickable
         textViewGithub.setText(Html.fromHtml(getResources().getString(R.string.home_github)));
         textViewGithub.setMovementMethod(LinkMovementMethod.getInstance());
@@ -238,30 +245,6 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
      */
     private void loadFromCache() {
         MyCVActivity.d("loadFromCache", "Load from Cache");
-        /** Reading contents of the temporary file, if already exists */
-        /*FileReader fReader = null;
-        String strLine;
-        try {
-            File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
-            fReader = new FileReader(tempFile);
-            BufferedReader bReader = new BufferedReader(fReader);
-            StringBuilder text = new StringBuilder();
-            while ((strLine = bReader.readLine()) != null) {
-                text.append(strLine);
-            }
-            JSONObject jsonObject = new JSONObject(text.toString());
-            handleDataPresentation(jsonObject);
-        } catch (IOException | NullPointerException | JSONException e) {
-            MyCVActivity.e("loadFromCache", "Error loading file " + e.getMessage(), e);
-        } finally {
-            try {
-                if (fReader != null) {
-                    fReader.close();
-                }
-            } catch (IOException io) {
-                MyCVActivity.e("loadFromCache", "Error closing file " + io.getMessage(), io);
-            }
-        }*/
         new AsyncLoadFromCache().execute();
     }
 
@@ -316,23 +299,6 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
      * Save data into cache
      */
     private void saveIntoCache(Object object) {
-        /** Create a tempfile and save it into app cache */
-        /*FileWriter writer = null;
-        try {
-            File tempFile = new File(context.getCacheDir().getPath() + "/" + CACHE_FILE_NAME);
-            writer = new FileWriter(tempFile);
-            writer.write(object.toString());
-        } catch (IOException | NullPointerException e) {
-            MyCVActivity.i("saveIntoCache", "Error saving file " + e.getMessage());
-        } finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } catch (IOException io) {
-                MyCVActivity.e("saveIntoCache", "Error closing file " + io.getMessage(), io);
-            }
-        }*/
         new AsyncSaveIntoCache().execute(object);
     }
 
@@ -399,7 +365,13 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
                 MyCVActivity.i("handleDataPresentation","Could not update urlGithub " + e.getMessage());
             }*/
             try {
-                textViewEmail.setText(datas.getString("email"));
+                if (canHandleEmailIntent) {
+                    textViewEmail.setText(datas.getString("email"));
+                } else {
+                    SpannableString spanString = new SpannableString(getResources().getString(R.string.home_email));
+                    spanString.setSpan(new UnderlineSpan(), 0, spanString.length(), 0);
+                    textViewEmail.setText(spanString);
+                }
             } catch (JSONException e) {
                 MyCVActivity.i("handleDataPresentation", "Could not update email " + e.getMessage());
             }
@@ -420,7 +392,7 @@ public class PlaceholderFragmentHome extends Fragment implements FragmentLifecyc
             }
             /* Not yet
             try {
-                textViewVille.setText(datas.getString("ville"));
+                textViewCity.setText(datas.getString("ville"));
             } catch (JSONException e) {
                 MyCVActivity.i("handleDataPresentation","Could not update ville " + e.getMessage());
             }*/

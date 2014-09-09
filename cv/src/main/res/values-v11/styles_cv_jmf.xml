@@ -56,11 +56,11 @@
         <item name="android:popupBackground">@drawable/menu_dropdown_panel_cv_jmf</item>
         <item name="android:dropDownSelector">@drawable/selectable_background_cv_jmf</item>
     </style>
-    
+
     <style name="ProgressBar.Cv_jmf" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
         <item name="android:progressDrawable">@drawable/progress_horizontal_cv_jmf</item>
     </style>
-    
+
     <style name="ActionButton.CloseMode.Cv_jmf" parent="@android:style/Widget.Holo.Light.ActionButton.CloseMode">
         <item name="android:background">@drawable/btn_cab_done_cv_jmf</item>
     </style>

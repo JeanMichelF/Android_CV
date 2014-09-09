@@ -17,8 +17,8 @@ import java.util.Locale;
  * Created by Jean-Mi on 24/03/2014.
  */
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
-    private List<Fragment> fragments;
-    private List<String> titles;
+    private final List<Fragment> fragments;
+    private final List<String> titles;
 
     public SectionsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
@@ -32,7 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         addItem(context.getString(R.string.url_section5), context.getString(R.string.title_section5).toUpperCase(l), false);
     }
 
-    public void addItem(String url, String title, boolean withJS) {
+    void addItem(String url, String title, boolean withJS) {
         Fragment myFragment;
         Bundle args = new Bundle();
         if (null == url) {

@@ -11,16 +11,6 @@
 
         <item name="android:imageButtonStyle">@style/ImageButtonCVTheme</item>
 
-        <item name="android:spinnerStyle">@style/SpinnerCVTheme</item>
-
-        <item name="android:spinnerDropDownItemStyle">@style/SpinnerDropDownItemCVTheme</item>
-
-        <item name="android:progressBarStyleHorizontal">@style/ProgressBarCVTheme</item>
-
-        <item name="android:seekBarStyle">@style/SeekBarCVTheme</item>
-
-        <item name="android:buttonStyleToggle">@style/ToggleCVTheme</item>
-
         <item name="android:listViewStyle">@style/ListViewCVTheme</item>
 
         <item name="android:listViewWhiteStyle">@style/ListViewCVTheme.White</item>

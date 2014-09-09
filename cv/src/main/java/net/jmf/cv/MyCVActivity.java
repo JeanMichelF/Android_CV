@@ -44,13 +44,13 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * A custom {@link ViewPager} title strip which looks much like Tabs present in Android v4.0 and
      * above, but is designed to give continuous feedback to the user when scrolling.
      */
-    SlidingTabLayout mSlidingTabLayout;
+    private SlidingTabLayout mSlidingTabLayout;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -65,9 +65,13 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @return bool
      */
     public static boolean isAvailable(Context ctx, Intent intent) {
-        final PackageManager mgr = ctx.getPackageManager();
-        List<ResolveInfo> list = mgr.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
+        try {
+            final PackageManager mgr = ctx.getPackageManager();
+            List<ResolveInfo> list = mgr.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            return list.size() > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -77,7 +81,7 @@ public class MyCVActivity extends ActionBarActivity implements ActionBar.TabList
      * @param context    Context
      * @param brandColor Color
      */
-    public static void brandGlowEffect(Context context, int brandColor) {
+    private static void brandGlowEffect(Context context, int brandColor) {
         try {
             //glow
             int glowDrawableId = context.getResources().getIdentifier("overscroll_glow", "drawable", "android");

@@ -1,7 +1,6 @@
 package net.jmf.cv.service;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import net.jmf.cv.MyCVActivity;
 
@@ -19,7 +18,7 @@ import org.apache.http.util.EntityUtils;
  * Created by Jean-Mi on 18/04/2014.
  */
 public class NetworkHttpMethod extends AsyncTask<String, Void, String> {
-    private NetworkHttpHandler networkHttpHandler;
+    private final NetworkHttpHandler networkHttpHandler;
 
     public NetworkHttpMethod(NetworkHttpHandler networkHttpHandler) {
         this.networkHttpHandler = networkHttpHandler;

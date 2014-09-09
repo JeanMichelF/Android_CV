@@ -34,6 +34,13 @@
             android:text="@string/home_permis" />
 
         <TextView
+            android:id="@+id/city"
+            style="@style/textHome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_city" />
+
+        <TextView
             android:id="@+id/presentation_title"
             style="@style/titleHeader"
             android:layout_width="match_parent"
@@ -60,6 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_github"
+            android:drawableStart="@drawable/ic_github"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:linksClickable="true"
@@ -70,6 +78,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@drawable/ic_email"
+            android:drawableStart="@drawable/ic_email"
             android:drawablePadding="5dp"
             android:gravity="center_vertical"
             android:text="@string/home_email" />

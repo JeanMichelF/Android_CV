@@ -25,14 +25,14 @@ public class PlaceholderFragmentWebView extends Fragment implements FragmentLife
      * The fragment argument representing the section number for this
      * fragment.
      */
-    protected static final String ARG_SECTION_URL = "url";
+    static final String ARG_SECTION_URL = "url";
 
-    protected String url;
+    String url;
 
-    protected Context context;
-    protected WebView webView;
-    protected boolean mustBeRefresh;
-    protected boolean currentlyLoading;
+    private Context context;
+    WebView webView;
+    private boolean mustBeRefresh;
+    boolean currentlyLoading;
 
     /**
      *
